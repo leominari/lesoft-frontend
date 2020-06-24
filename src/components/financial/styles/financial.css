@@ -1,0 +1,27 @@
+.padrao {
+    margin: 0 auto;
+    max-width: 90%;
+    padding: 40px 40px;
+}
+
+.distancia-direita10 {
+    margin-right: 10px;
+}
+
+.head-example {
+    width: 28px;
+    height: 28px;
+    border-radius: 2px;
+    background: #eee;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.badge-space {
+    margin-top: 10px;
+    margin-right: 20px;
+}
+
+.space-top10 {
+    margin-top: 10px;
+}

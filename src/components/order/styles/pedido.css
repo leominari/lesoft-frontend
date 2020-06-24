@@ -1,0 +1,48 @@
+.padrao {
+    margin: 0 auto;
+    max-width: 90%;
+    padding: 40px 40px;
+}
+
+.distancia-direita10 {
+    margin-right: 10px;
+}
+
+.distancia-produto {
+    margin-bottom: 10px;
+}
+
+.box-quantidade {
+    margin-left: 5px;
+    margin-right: 5px;
+    max-width: 110px;
+}
+
+.box-quantidade {
+    margin-right: 5px;
+    max-width: 110px;
+}
+
+.box-preco {
+    margin-right: 5px;
+    max-width: 110px;
+}
+
+.box-number-listItem {
+    margin-left: 5px;
+    margin-right: 5px;
+    max-width: 40px;
+}
+
+.table-auto {
+    table-layout: auto;
+}
+
+.col-auto {
+    width: 30%;
+    min-width: 30%;
+}
+
+.distancia-top10 {
+    margin-top: 10px;
+}
