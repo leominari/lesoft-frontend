@@ -12,10 +12,9 @@ import {
 
 } from '@ant-design/icons';
 import './styles/home.css'
-import axios from 'axios'
-
 import { HomeRoutes } from '../../routes'
-import SubMenu from "antd/lib/menu/SubMenu";
+import api from "../../services/api";
+import { notifError } from "../helpers/notfication";
 
 
 export default function Home(props) {
@@ -26,11 +25,14 @@ export default function Home(props) {
 
 
     function logout() {
-        axios.post('/api/logout', { token: getToken() })
+        api.post('/logout', { token: getToken() })
             .then(response => {
-                if (response.data.status_code === "200") {
+                console.log(response)
+                if (response.data) {
                     removeToken();
                     window.location.replace("/")
+                }else{
+                    notifError('Erro ao Sair', 'Entre em contato com administração do sistema.')
                 }
             }).catch(e => console.log(e))
     }

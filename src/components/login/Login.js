@@ -1,9 +1,8 @@
 import React from "react"
 import './login.css'
-import axios from "axios"
 import { Form, Input, Button } from 'antd'
 import { setToken, isAuthenticated } from "../../utils/auth"
-
+import api from '../../services/api'
 export default function Login() {
 
     if (isAuthenticated()) {
@@ -20,10 +19,10 @@ export default function Login() {
     }
 
     const onFinish = values => {
-        axios.post('/api/login', values)
-            .then(response => {
-                if (response.data.status_code === "200") {
-                    setToken(response.data.token)
+        api.post('login', values)
+            .then(res => {
+                if (res.status === 200) {
+                    setToken(res.data.token)
                     window.location.replace("/home")
                 }
             }).catch(e => console.log(e))
