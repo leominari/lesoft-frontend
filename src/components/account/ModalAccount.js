@@ -2,11 +2,10 @@ import React, { useState } from 'react'
 import { Button, Modal, Form, Input, notification } from 'antd'
 import './styles/account.css'
 
-import Axios from 'axios'
-
 import { getToken } from '../../utils/auth';
 import { AccountStore } from '../../redux/store';
 import { accountAction } from '../../redux/actions';
+import api from '../../services/api';
 
 
 export default function ModalAccount() {
@@ -18,10 +17,6 @@ export default function ModalAccount() {
     const layout = {
         labelCol: { span: 4 },
         wrapperCol: { span: 18 },
-    };
-
-    const validateMessages = {
-        required: '${label} é necessário!'
     };
 
 
@@ -36,11 +31,11 @@ export default function ModalAccount() {
 
 
     async function newAccount(values) {
-        const response = await Axios.post('/api/account/newacc', {
+        const response = await api.post('/account', {
             ...values.account,
             token: getToken()
         })
-        if (response.data.status_code === 200) {
+        if (response.status === 200) {
             AccountStore.dispatch({
                 type: accountAction.SET,
                 accounts: response.data.all_accounts
@@ -72,7 +67,7 @@ export default function ModalAccount() {
                 footer={false}
                 onCancel={closeModal}
             >
-                <Form {...layout} name="nest-messages" onFinish={onSubmit} validateMessages={validateMessages}>
+                <Form {...layout} name="nest-messages" onFinish={onSubmit} >
 
                     <Form.Item name={['account', 'name']} label="Name" rules={[{ required: true }]}>
                         <Input />

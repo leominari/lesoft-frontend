@@ -1,69 +1,79 @@
-import React, { useState } from 'react'
-import { Skeleton, Switch, Card, Avatar, Button, Row } from 'antd'
+import React from 'react'
+import { Skeleton, Card, Avatar, Row } from 'antd'
 import {
     PlusOutlined,
     ExportOutlined,
     MinusOutlined
 } from '@ant-design/icons'
-
 import { AccountStore } from '../../redux/store';
+import { Link } from 'react-router-dom';
+
 import ModalAccount from './ModalAccount';
 import dAccount from '../data/dAccount'
-import { Link } from 'react-router-dom';
 
 const { Meta } = Card;
 
-function Account() {
-    const Account = new dAccount()
+class Account extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            accounts: [],
+            accountCards: [],
+            Account: new dAccount()
+        }
+    }
 
-    const [accounts, setAccounts] = useState([])
-    const [accountCards, setCard] = useState([])
 
-
-    React.useEffect(() => {
-        AccountStore.subscribe(() => {
-            setAccounts(AccountStore.getState())
-        })
-        Account.getAllAccounts()
-    }, [])
-
-    React.useEffect(() => {
-        let temp = []
-        accounts.forEach(account => {
-            temp.push(
-                <Card
+    componentDidMount() {
+        this.unsubscribe = AccountStore.subscribe(() => {
+            const temp = []
+            const tempAccounts = AccountStore.getState();
+            tempAccounts.forEach(account => {
+                temp.push(
+                    <Card
                     style={{ width: 290, marginTop: 12, marginRight: 12 }}
-                    key={account.id}
-                    actions={[
-                        <Link to={"/home/conta/" + account.id}><ExportOutlined key="select"/></Link>,
-                        <PlusOutlined key="add" />,
-                        <MinusOutlined key="remove" />
-                    ]}
-                >
-                    <Skeleton loading={false} avatar active>
-                        <Meta
-                            avatar={
-                                <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-                            }
-                            title={account.name}
-                            description={['ultima transação', 'penultima transação', 'antipenutilma transação']}
-                        />
-                    </Skeleton>
-                </Card>
-            )
-        });
-        setCard(temp)
-    }, [accounts])
+                        key={account.id}
+                        actions={[
+                            <Link to={"/home/conta/" + account.id}><ExportOutlined key="select" /></Link>,
+                            <PlusOutlined key="add" />,
+                            <MinusOutlined key="remove" />
+                        ]}
+                    >
+                        <Skeleton loading={false} avatar active>
+                            <Meta
+                                avatar={
+                                    <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+                                }
+                                title={account.name}
+                                description={['ultima transação', 'penultima transação', 'antipenutilma transação']}
+                                />
+                        </Skeleton>
+                    </Card>
+                )
+            });
+            this.setState({
+                accounts: AccountStore.getState(),
+                accountCards: temp
+            })    
+        })
+        
+        this.state.Account.getAllAccounts()
+    }
 
-    return (
-        <>
-            <ModalAccount />
-            <Row>
-                {accountCards}
-            </Row>
-        </>
-    );
+    render(){
+        return (
+            <>
+                <ModalAccount />
+                <Row>
+                    {this.state.accountCards}
+                </Row>
+            </>
+        );
+    }
+
+    componentWillUnmount(){
+        this.unsubscribe();
+    }
 }
-
 
 export default Account

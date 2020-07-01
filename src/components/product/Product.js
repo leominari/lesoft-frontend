@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { Table } from 'antd'
 import './styles/prod.css'
 
@@ -8,64 +8,78 @@ import dProduct from '../data/dProduct';
 
 
 
-export default function Product() {
-    const Product = new dProduct()
-    const [products, setProducts] = useState([])
+class Product extends React.Component {
 
-
-    useEffect(() => {
-        ProductStore.subscribe(() => {
-            setProducts(tableData(ProductStore.getState()))
-        })
-        Product.getAllProducts()
-    }, [])
-
-    function tableData(data) {
-        const temp = []
-        data.forEach(element => {
-            temp.push({
-                key: element.id,
-                name: element.name,
-                price: element.price,
-                unity: element.unity
-            })
-        });
-        return temp
-
+    constructor(props) {
+        super(props);
+        this.state = {
+            products: []
+        }
     }
 
 
-    const columns = [
-        {
-            title: 'Código do Produto',
-            dataIndex: 'key',
-            key: 'key'
+    componentDidMount() {
+        const Product = new dProduct();
+        function tableData(data) {
+            const temp = []
+            data.forEach(element => {
+                temp.push({
+                    key: element.id,
+                    name: element.name,
+                    price: element.price,
+                    unity: element.unity
+                })
+            });
+            return temp
 
-        },
-        {
-            title: 'Nome',
-            dataIndex: 'name',
-            key: 'name'
+        }
 
-        },
-        {
-            title: 'Preço',
-            dataIndex: 'price',
-            key: 'price'
-        },
-        {
-            title: 'Unidade',
-            dataIndex: 'unity',
-            key: 'unity'
-        },
-    ];
+        this.unsubscribe = ProductStore.subscribe(() => {
+            this.setState({
+                products: tableData(ProductStore.getState()),
+            })
+        })
+        Product.getAllProducts()
+    }
 
-    return (
-        <div>
-            <ModalProduct />
-            <Table dataSource={products} columns={columns} className="distancia-botao" />
-        </div>
-    );
 
+    render() {
+        const columns = [
+            {
+                title: 'Código do Produto',
+                dataIndex: 'key',
+                key: 'key'
+
+            },
+            {
+                title: 'Nome',
+                dataIndex: 'name',
+                key: 'name'
+
+            },
+            {
+                title: 'Preço',
+                dataIndex: 'price',
+                key: 'price'
+            },
+            {
+                title: 'Unidade',
+                dataIndex: 'unity',
+                key: 'unity'
+            },
+        ];
+
+        return (
+            <div>
+                <ModalProduct />
+                <Table dataSource={this.state.products} columns={columns} className="distancia-botao" />
+            </div>
+        );
+    }
+
+    componentWillUnmount() {
+        this.unsubscribe();
+    }
 }
 
+export default Product;

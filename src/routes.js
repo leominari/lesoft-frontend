@@ -18,7 +18,6 @@ import Account from './components/account/Account'
 import ViewAccount from './components/account/ViewAccount'
 
 //Financieiro
-import Financial from './components/financial/Financial'
 import Bill2 from './components/financial/bill2/Bill2'
 
 const Routes = () => {

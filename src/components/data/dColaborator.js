@@ -1,15 +1,15 @@
 import { ColaboratorStore } from '../../redux/store';
 import { getToken } from '../../utils/auth';
-import Axios from 'axios';
 import { colaboratorAction } from '../../redux/actions';
+import api from '../../services/api';
 
 
 class dColaborator {
 
     getAllColaborators() {
         async function get() {
-            const getUrl = '/api/colaborator/getall' + getToken()
-            const response = await Axios.get(getUrl)
+            const getUrl = '/colaborator?token=' + getToken()
+            const response = await api.get(getUrl)
             ColaboratorStore.dispatch({
                 type: colaboratorAction.SET,
                 colaborators: response.data

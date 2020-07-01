@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { ProductStore } from '../../redux/store'
 import { Button, Modal, Form, Input, notification } from 'antd'
-import Axios from 'axios'
 import { getToken } from '../../utils/auth'
 import { productAction } from '../../redux/actions'
+import api from '../../services/api'
 
 export default function ModalProduct() {
 
@@ -15,20 +15,16 @@ export default function ModalProduct() {
         wrapperCol: { span: 18 },
     };
 
-    const validateMessages = {
-        required: '${label} é necessário!'
-    };
-
 
     const onSubmit = (values) => (isVisible(!newProduct(values)))
 
 
     async function newProduct(values) {
-        const response = await Axios.post('/api/product/new', {
+        const response = await api.post('/product', {
             ...values.product,
             token: getToken()
         })
-        if (response.data.status_code === 200) {
+        if (response.status === 200) {
             ProductStore.dispatch({
                 type: productAction.SET,
                 products: response.data.all_products
@@ -63,12 +59,12 @@ export default function ModalProduct() {
                 footer={false}
                 onCancel={closeModal}
             >
-                <Form {...layout} name="nest-messages" onFinish={onSubmit} validateMessages={validateMessages}>
+                <Form {...layout} name="nest-messages" onFinish={onSubmit} >
 
                     <Form.Item name={['product', 'name']} label="Name" rules={[{ required: true }]}>
                         <Input />
                     </Form.Item>
-                    <Form.Item name={['product', 'price']} label="Preço" rules={[{ required: true }]}>
+                    <Form.Item name={['product', 'value']} label="Preço" rules={[{ required: true }]}>
                         <Input />
                     </Form.Item>
                     <Form.Item name={['product', 'unity']} label="Unidade" rules={[{ required: true }]}>
