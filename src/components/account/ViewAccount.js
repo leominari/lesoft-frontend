@@ -20,24 +20,26 @@ class ViewAccount extends React.Component {
 
     componentDidMount() {
         const getTransactions = async () => {
-            const response = await api.get('/transaction/' + this.idAccount + '?token=' + getToken())
-            if (response.status === 200) {
-                TransactionStore.dispatch({
-                    type: transactionAction.SET,
-                    transactions: response.data
-                })
-                return true
-            } else {
-                notification.open({
-                    message: 'Erro no Cadastro',
-                    description:
-                        'Ocorreu um erro no cadastro, entre em contato com a adminitração do sistema.',
-                    onClick: () => {
-                        console.log('Notification Clicked!');
-                    },
-                })
-                return false
-            }
+            await api.get('/transaction/' + this.idAccount + '?token=' + getToken()).then((response) => {
+                if (response.status === 200) {
+                    TransactionStore.dispatch({
+                        type: transactionAction.SET,
+                        transactions: response.data
+                    })
+                    return true
+                } else {
+                    notification.open({
+                        message: 'Erro no Cadastro',
+                        description:
+                            'Ocorreu um erro no cadastro, entre em contato com a adminitração do sistema.',
+                        onClick: () => {
+                            console.log('Notification Clicked!');
+                        },
+                    })
+                    return false
+                }
+
+            })
         }
 
         const tableData = (data) => {
@@ -50,11 +52,6 @@ class ViewAccount extends React.Component {
                 balance += element.value
                 helpColor = element.value >= 0 ? "green" : "red"
                 temp.push(<Timeline.Item key={element.id} color={helpColor} label={"R$ " + element.value}>{element.description} dia {helpDate.getDate() + "/" + (helpDate.getMonth() + 1) + "/" + helpDate.getFullYear()}</Timeline.Item>)
-                // temp.push({
-                //     key: element.id,
-                //     description: element.description,
-                //     value: "R$ " + Number(element.value).toFixed(2)
-                // })
             });
             this.setState({
                 balance: balance
@@ -74,34 +71,16 @@ class ViewAccount extends React.Component {
 
     render() {
 
-        // const columns = [
-        //     {
-        //         title: 'Descrição',
-        //         dataIndex: 'description',
-        //         key: 'id'
-        //     },
-        //     {
-        //         title: 'Valor',
-        //         dataIndex: 'value',
-        //     },
-        //     {
-        //         title: 'Opções',
-        //         dataIndex: 'value',
-        //     },
-        // ];
-
 
         return <>
             <Row>
                 <ModalCredit account={this.idAccount} />
                 <ModalDebit account={this.idAccount} />
             </Row>
-            {/* <Button onClick={() => { console.log(transactions) }}>teste</Button> */}
             <h1>Saldo: R$ {Number(this.state.balance).toFixed(2)}</h1>
             <Timeline mode="left">
                 {this.state.transactions}
             </Timeline>
-            {/* <Table columns={columns} dataSource={transactions} bordered /> */}
         </>
 
     }

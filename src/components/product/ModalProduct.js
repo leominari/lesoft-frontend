@@ -61,13 +61,13 @@ export default function ModalProduct() {
             >
                 <Form {...layout} name="nest-messages" onFinish={onSubmit} >
 
-                    <Form.Item name={['product', 'name']} label="Name" rules={[{ required: true }]}>
+                    <Form.Item name={['product', 'name']} label="Name" >
                         <Input />
                     </Form.Item>
-                    <Form.Item name={['product', 'value']} label="Preço" rules={[{ required: true }]}>
+                    <Form.Item name={['product', 'value']} label="Preço" >
                         <Input />
                     </Form.Item>
-                    <Form.Item name={['product', 'unity']} label="Unidade" rules={[{ required: true }]}>
+                    <Form.Item name={['product', 'unity']} label="Unidade" >
                         <Input />
                     </Form.Item>
                     <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>

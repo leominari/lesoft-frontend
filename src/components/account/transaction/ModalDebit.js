@@ -25,23 +25,36 @@ class ModalAdd extends React.Component {
                 value: values.transaction.value * -1,
                 token: getToken()
             }
-            const response = await api.post('transaction', obj )
-            if (response.status === 200) {
-                TransactionStore.dispatch({
-                    type: transactionAction.SET,
-                    transactions: response.data
-                })
-            } else {
-                notification.open({
-                    message: 'Erro no Cadastro',
-                    description:
-                        'Ocorreu um erro no cadastro, entre em contato com a adminitração do sistema.',
-                    onClick: () => {
-                        console.log('Notification Clicked!');
-                    },
-                })
-            }
+            await api.post('transaction', obj).then(async (response) => {
+                if (response.status === 200) {
+                    if (response.data) {
+                        await api.get('/transaction/' + this.idAccount + '?token=' + getToken()).then((response) => {
+                            if (response.status === 200) {
+                                TransactionStore.dispatch({
+                                    type: transactionAction.SET,
+                                    transactions: response.data
+                                })
+                            }
+                        })
+                        showModal()
+                    }
+                } else {
+                    notification.open({
+                        message: 'Erro no Cadastro',
+                        description:
+                            'Ocorreu um erro no cadastro, entre em contato com a adminitração do sistema.',
+                        onClick: () => {
+                            console.log('Notification Clicked!');
+                        },
+                    })
+                }
+            })
         }
+
+
+
+
+
 
         const layout = {
             labelCol: { span: 4 },
@@ -66,10 +79,10 @@ class ModalAdd extends React.Component {
                 >
                     <Form {...layout} name="nest-messages" onFinish={newTransaction}>
 
-                        <Form.Item name={['transaction', 'description']} label="Descrição" rules={[{ required: true }]}>
+                        <Form.Item name={['transaction', 'description']} label="Descrição" >
                             <Input />
                         </Form.Item>
-                        <Form.Item name={['transaction', 'value']} label="Valor" rules={[{ required: true }]}>
+                        <Form.Item name={['transaction', 'value']} label="Valor" >
                             <Input />
                         </Form.Item>
                         <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>

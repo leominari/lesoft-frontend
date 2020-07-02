@@ -88,16 +88,16 @@ class Modal2Pay extends React.Component {
                 >
                     <Form {...layout} name="nest-messages" onFinish={newBill2Pay} >
 
-                        <Form.Item name={['b2p', 'desc']} label="Descrição" rules={[{ required: true }]}>
+                        <Form.Item name={['b2p', 'desc']} label="Descrição" >
                             <Input />
                         </Form.Item>
-                        <Form.Item name={['b2p', 'value']} label="Valor" rules={[{ required: true }]}>
+                        <Form.Item name={['b2p', 'value']} label="Valor" >
                             <Input />
                         </Form.Item>
-                        <Form.Item name={['b2p', 'date']} label="Data" rules={[{ required: true }]}>
+                        <Form.Item name={['b2p', 'date']} label="Data" >
                             <DatePicker format={dateFormat} />
                         </Form.Item>
-                        <Form.Item label="Conta" rules={[{ required: true }]}>
+                        <Form.Item label="Conta" >
                             <SelectAccount data={this.data} />
                         </Form.Item>
                         <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>

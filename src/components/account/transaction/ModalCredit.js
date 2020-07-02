@@ -18,6 +18,13 @@ class ModalAdd extends React.Component {
 
 
     render() {
+
+        const showModal = () => {
+            this.setState({
+                ModalVisible: !this.state.ModalVisible
+            })
+        }
+
         const newTransaction = async (values) => {
             const obj = {
                 idAccount: this.props.account,
@@ -25,22 +32,30 @@ class ModalAdd extends React.Component {
                 value: values.transaction.value,
                 token: getToken()
             }
-            const response = await api.post('transaction', obj )
-            if (response.status === 200) {
-                TransactionStore.dispatch({
-                    type: transactionAction.SET,
-                    transactions: response.data
-                })
-            } else {
-                notification.open({
-                    message: 'Erro no Cadastro',
-                    description:
-                        'Ocorreu um erro no cadastro, entre em contato com a adminitração do sistema.',
-                    onClick: () => {
-                        console.log('Notification Clicked!');
-                    },
-                })
-            }
+            await api.post('transaction', obj).then(async(response) => {
+                if (response.status === 200) {
+                    if (response.data) {
+                        await api.get('/transaction/' + this.idAccount + '?token=' + getToken()).then((response) => {
+                            if (response.status === 200) {
+                                TransactionStore.dispatch({
+                                    type: transactionAction.SET,
+                                    transactions: response.data
+                                })
+                            }
+                        })
+                        showModal()
+                    }
+                } else {
+                    notification.open({
+                        message: 'Erro no Cadastro',
+                        description:
+                            'Ocorreu um erro no cadastro, entre em contato com a adminitração do sistema.',
+                        onClick: () => {
+                            console.log('Notification Clicked!');
+                        },
+                    })
+                }
+            })
         }
 
         const layout = {
@@ -48,11 +63,6 @@ class ModalAdd extends React.Component {
             wrapperCol: { span: 18 },
         };
 
-        const showModal = () => {
-            this.setState({
-                ModalVisible: !this.state.ModalVisible
-            })
-        }
         return (
             <div>
                 <Button onClick={showModal}>
@@ -66,10 +76,10 @@ class ModalAdd extends React.Component {
                 >
                     <Form {...layout} name="nest-messages" onFinish={newTransaction}>
 
-                        <Form.Item name={['transaction', 'description']} label="Descrição" rules={[{ required: true }]}>
+                        <Form.Item name={['transaction', 'description']} label="Descrição" >
                             <Input />
                         </Form.Item>
-                        <Form.Item name={['transaction', 'value']} label="Valor" rules={[{ required: true }]}>
+                        <Form.Item name={['transaction', 'value']} label="Valor" >
                             <Input />
                         </Form.Item>
                         <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
@@ -77,7 +87,7 @@ class ModalAdd extends React.Component {
                                 Cancelar
                         </Button>
                             <Button type="primary" htmlType="submit">
-                                Debitar
+                                Creditar
                         </Button>
                         </Form.Item>
                     </Form>

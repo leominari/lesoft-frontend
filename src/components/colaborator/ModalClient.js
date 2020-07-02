@@ -21,9 +21,6 @@ export default function ModalColaborator() {
         wrapperCol: { span: 18 },
     };
 
-    const validateMessages = {
-        required: '${label} é necessário!'
-    };
 
 
     const onSubmit = (values) => (isVisible(!newColaborator(values)))
@@ -69,13 +66,10 @@ export default function ModalColaborator() {
         switch (typeColaborator) {
             case 0:
                 return <></>
-                break;
             case "PF":
                 return <PessoaFisica />
-                break;
             case "PJ":
                 return <PessoaJuridica />
-                break;
             default:
                 break;
         }
@@ -92,17 +86,17 @@ export default function ModalColaborator() {
                 footer={false}
                 onCancel={closeModal}
             >
-                <Form {...layout} name="nest-messages" onFinish={onSubmit} validateMessages={validateMessages}>
+                <Form {...layout} name="nest-messages" onFinish={onSubmit}>
 
                     <Radio.Group onChange={selectColab} >
                         <Radio value={"PF"}>Pessoa Fisica</Radio>
                         <Radio value={"PJ"}>Pessoa Juridica</Radio>
                     </Radio.Group>
                     <ColaboratorType />
-                    <Form.Item name={['user', 'name']} label="Name" rules={[{ required: true }]}>
+                    <Form.Item name={['user', 'name']} label="Name" >
                         <Input />
                     </Form.Item>
-                    <Form.Item name={['user', 'type']} label="Tipo" rules={[{ required: true }]}>
+                    <Form.Item name={['user', 'type']} label="Tipo" >
                         <Input />
                     </Form.Item>
                     <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>

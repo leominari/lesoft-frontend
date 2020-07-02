@@ -1,9 +1,7 @@
 import React from 'react'
-import { Skeleton, Card, Avatar, Row } from 'antd'
+import { Skeleton, Card, Row } from 'antd'
 import {
-    PlusOutlined,
     ExportOutlined,
-    MinusOutlined
 } from '@ant-design/icons'
 import { AccountStore } from '../../redux/store';
 import { Link } from 'react-router-dom';
@@ -31,22 +29,17 @@ class Account extends React.Component {
             tempAccounts.forEach(account => {
                 temp.push(
                     <Card
-                    style={{ width: 290, marginTop: 12, marginRight: 12 }}
+                        style={{ width: 290, marginTop: 12, marginRight: 12 }}
                         key={account.id}
                         actions={[
                             <Link to={"/home/conta/" + account.id}><ExportOutlined key="select" /></Link>,
-                            <PlusOutlined key="add" />,
-                            <MinusOutlined key="remove" />
                         ]}
                     >
                         <Skeleton loading={false} avatar active>
                             <Meta
-                                avatar={
-                                    <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-                                }
                                 title={account.name}
                                 description={['ultima transação', 'penultima transação', 'antipenutilma transação']}
-                                />
+                            />
                         </Skeleton>
                     </Card>
                 )
@@ -54,13 +47,13 @@ class Account extends React.Component {
             this.setState({
                 accounts: AccountStore.getState(),
                 accountCards: temp
-            })    
+            })
         })
-        
+
         this.state.Account.getAllAccounts()
     }
 
-    render(){
+    render() {
         return (
             <>
                 <ModalAccount />
@@ -71,7 +64,7 @@ class Account extends React.Component {
         );
     }
 
-    componentWillUnmount(){
+    componentWillUnmount() {
         this.unsubscribe();
     }
 }

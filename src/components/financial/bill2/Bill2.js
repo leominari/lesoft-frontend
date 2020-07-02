@@ -1,5 +1,5 @@
 import React from 'react'
-import { Calendar, Badge, Row, Button } from 'antd'
+import { Calendar, Badge, Row } from 'antd'
 import ptBR from 'antd/es/locale/pt_BR'
 import moment from 'moment'
 import Modal2Pay from './Modal2Pay'
@@ -165,7 +165,6 @@ class Bill2 extends React.Component {
             <Row>
                 <Modal2Receive />
                 <Modal2Pay />
-                <Button onClick={() => { console.log(this.state.bill2) }}>ver billt2s</Button>
             </Row>
             <Calendar locale={ptBR} dateCellRender={dateCellRender} monthCellRender={monthCellRender} />
         </>
