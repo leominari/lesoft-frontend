@@ -15,7 +15,6 @@ class SelectProduct extends React.Component {
   componentDidMount() {
     let optionRows = []
     let key = 0
-    console.log(this.state.products)
     this.state.products.forEach(element => {
       optionRows.push(<Option key={key}>{element.name}</Option>)
       key++
@@ -23,7 +22,6 @@ class SelectProduct extends React.Component {
     this.setState({
       productsOptions: optionRows
     })
-    console.log(this.state.productsOptions)
   }
 
 

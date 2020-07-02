@@ -1,11 +1,11 @@
 import React from 'react'
 import { Button, Typography } from 'antd'
-import { OrderProductStore } from '../../redux/store'
+import { OrderProductStore } from '../../../redux/store'
 import SelectProduct from './AddProductTable'
 import {
     MinusSquareOutlined
 } from '@ant-design/icons'
-import { orderProductAction } from '../../redux/actions'
+import { orderProductAction } from '../../../redux/actions'
 const { Text } = Typography
 
 

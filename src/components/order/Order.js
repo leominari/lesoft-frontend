@@ -1,12 +1,12 @@
 import React from 'react'
-import { Table } from 'antd'
+import { Table, Tag, Button } from 'antd'
 import './styles/pedido.css'
 import { orderAction } from '../../redux/actions';
 import { getToken } from '../../utils/auth';
 import { OrderStore } from '../../redux/store';
 import api from '../../services/api';
 
-import ModalPedido from './ModalOrder'
+import CreateOrder from './crud/CreateOrder'
 
 
 class Order extends React.Component {
@@ -28,12 +28,29 @@ class Order extends React.Component {
                 let day = date.getDate()
                 let month = date.getMonth() + 1
                 let year = date.getFullYear()
+                let status
+                switch (element.status) {
+                    case "closed":
+                        status = <Tag color="#108ee9">FECHADO</Tag>
+                        break;
+                    case "received":
+                        status = <Tag color="#87d068">RECEBIDO</Tag>
+                        break;
+                    case "opened":
+                        status = <Tag color="#f50">EM ABERTO</Tag>
+                        break;
+                    default:
+                        status = <Tag color="#fff">NENHUM</Tag>
+                        break;
+                }
                 temp.push({
                     key: element.id,
+                    status: status,
                     idClient: element.Client,
                     idSalesman: element.Salesman,
                     finalPrice: 'R$ ' + Number(element.price).toFixed(2),
-                    date: day + '/' + month + '/' + year
+                    date: day + '/' + month + '/' + year,
+                    actions: <><Button onClick={() => { console.log('edit order' + element.id) }}>Edit</Button></>
                 })
             });
             return temp
@@ -64,10 +81,14 @@ class Order extends React.Component {
                 title: 'Código do Pedido',
                 dataIndex: 'key',
                 key: 'key',
-                sorter: (a,b) => 1,
+                sorter: (a, b) => 1,
                 defaultSortOrder: 'descend'
                 // sortDirections: ['descend']
 
+            },
+            {
+                title: 'Status',
+                dataIndex: 'status',
             },
             {
                 title: 'Vendedor',
@@ -86,21 +107,25 @@ class Order extends React.Component {
                 title: 'Data',
                 dataIndex: 'date',
             },
+            {
+                title: 'Ações',
+                dataIndex: 'actions',
+            },
         ];
 
         return (
             <div>
-                <ModalPedido />
-                <Table 
-                    dataSource={this.state.orders} 
-                    columns={columns} 
-                    className="distancia-botao" 
+                <CreateOrder />
+                <Table
+                    dataSource={this.state.orders}
+                    columns={columns}
+                    className="distancia-botao"
                     sortDirections={['descend']}
                 />
             </div>
         );
     }
-    componentWillUnmount(){
+    componentWillUnmount() {
         this.unsubscribe();
     }
 

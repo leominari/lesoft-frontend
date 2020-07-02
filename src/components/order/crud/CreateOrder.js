@@ -1,21 +1,21 @@
 import React from 'react'
 import { Button, Modal, Form } from 'antd'
-import { notifSuccess, notifError } from '../helpers/notfication'
-import { getToken } from '../../utils/auth';
-import { orderAction, Bill2Action } from '../../redux/actions';
-import { OrderStore, Bill2Store } from '../../redux/store';
-import api from '../../services/api';
+import { notifSuccess, notifError } from '../../helpers/notfication'
+import { getToken } from '../../../utils/auth';
+import { orderAction, Bill2Action } from '../../../redux/actions';
+import { OrderStore, Bill2Store } from '../../../redux/store';
+import api from '../../../services/api';
 
-import SelectColaborator from '../colaborator/SelectColaborator'
-import dColaborator from '../data/dColaborator'
-import dProduct from '../data/dProduct';
+import SelectColaborator from '../../colaborator/SelectColaborator'
+import dColaborator from '../../data/dColaborator'
+import dProduct from '../../data/dProduct';
 import ItensTable from './ItensTable'
 import Bill2Order from './Bill2Order'
 
 const Product = new dProduct()
 const Colaborator = new dColaborator()
 
-class ModalOrder extends React.Component {
+class CreateOrder extends React.Component {
     constructor(props) {
         super(props);
         this.order = {}
@@ -84,6 +84,7 @@ class ModalOrder extends React.Component {
                 idClient: this.order.idClient,
                 idSalesman: this.order.idSalesman,
                 products: this.order.products,
+                status: "opened",
                 token: getToken()
             }
             if(this.bill2order.date && this.bill2order.idAccount){
@@ -128,6 +129,7 @@ class ModalOrder extends React.Component {
                     visible={this.state.ModalVisible}
                     footer={false}
                     onCancel={showModal}
+                    destroyOnClose={true}
                 >
                     <Form {...layout} name="nest-messages" onFinish={newOrder}>
 
@@ -160,7 +162,7 @@ class ModalOrder extends React.Component {
 }
 
 
-export default ModalOrder;
+export default CreateOrder;
 
 
 

@@ -8,13 +8,15 @@ import {
     LogoutOutlined,
     BankOutlined,
     TagsOutlined,
-    DollarCircleOutlined
+    DollarCircleOutlined,
+    SettingOutlined
 
 } from '@ant-design/icons';
 import './styles/home.css'
 import { HomeRoutes } from '../../routes'
 import api from "../../services/api";
 import { notifError } from "../helpers/notfication";
+import SubMenu from "antd/lib/menu/SubMenu";
 
 
 export default function Home(props) {
@@ -27,11 +29,10 @@ export default function Home(props) {
     function logout() {
         api.post('/logout', { token: getToken() })
             .then(response => {
-                console.log(response)
                 if (response.data) {
                     removeToken();
                     window.location.replace("/")
-                }else{
+                } else {
                     notifError('Erro ao Sair', 'Entre em contato com administração do sistema.')
                 }
             }).catch(e => console.log(e))
@@ -74,6 +75,11 @@ export default function Home(props) {
                             Produtos
                         </Link>
                     </Menu.Item>
+                    <SubMenu key="sub1" icon={<SettingOutlined />} title="Configuração">
+                        <Menu.Item key="6">Colaboradores</Menu.Item>
+                        <Menu.Item key="7">Despesas</Menu.Item>
+                        <Menu.Item key="8">Acesso ao Sistema</Menu.Item>
+                    </SubMenu>
                     <Menu.Item onClick={logout} key="10" icon={<LogoutOutlined />}>Sair</Menu.Item>
                 </Menu>
             </Sider>

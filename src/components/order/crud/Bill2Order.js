@@ -1,7 +1,7 @@
 import React from 'react'
 import { DatePicker, Row } from 'antd'
-import SelectAccount from '../account/SelectAccount'
-import './styles/pedido.css'
+import SelectAccount from '../../account/SelectAccount'
+import '../styles/pedido.css'
 
 class Bill2Order extends React.Component {
     constructor(props) {

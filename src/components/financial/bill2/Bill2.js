@@ -85,12 +85,15 @@ class Bill2 extends React.Component {
                 receive: [],
                 color: ""
             }
-            const date = value.year() + "-" + ("00" + (value.month() + 1)).slice(-2) + "-" + value.date()
-            const temp = this.state.bill2
+            const date = new Date(value.year() + "-" + ("00" + (value.month() + 1)).slice(-2) + "-" + value.date())
+            const bill2 = this.state.bill2
+            
             const today = new moment()
-            if (temp.length > 0) {
-                temp.forEach(element => {
-                    if (date === element.date.substr(0, 10)) {
+            if (bill2.length > 0) {
+                bill2.forEach(element => {
+                    const elementDate = new Date(element.date)
+                    if (date.toDateString() === elementDate.toDateString()) {
+                        console.log('aooo')
                         if (element.type === "pay") {
                             listData.color = overdue(today._d, date) ? "#FF0000" : "#0000FF"
                             listData.pay.push(element)
