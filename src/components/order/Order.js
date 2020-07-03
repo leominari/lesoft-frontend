@@ -1,5 +1,5 @@
 import React from 'react'
-import { Table, Tag, Button } from 'antd'
+import { Table, Tag } from 'antd'
 import './styles/pedido.css'
 import { orderAction } from '../../redux/actions';
 import { getToken } from '../../utils/auth';
@@ -7,6 +7,7 @@ import { OrderStore } from '../../redux/store';
 import api from '../../services/api';
 
 import CreateOrder from './crud/CreateOrder'
+import EditModal from './EditModal';
 
 
 class Order extends React.Component {
@@ -20,8 +21,7 @@ class Order extends React.Component {
 
 
     componentDidMount() {
-
-        function tableData(data) {
+        const tableData = (data) => {
             const temp = []
             data.forEach(element => {
                 let date = new Date(element.createDate)
@@ -50,7 +50,7 @@ class Order extends React.Component {
                     idSalesman: element.Salesman,
                     finalPrice: 'R$ ' + Number(element.price).toFixed(2),
                     date: day + '/' + month + '/' + year,
-                    actions: <><Button onClick={() => { console.log('edit order' + element.id) }}>Edit</Button></>
+                    actions: <EditModal order={element} />
                 })
             });
             return temp
@@ -83,8 +83,6 @@ class Order extends React.Component {
                 key: 'key',
                 sorter: (a, b) => 1,
                 defaultSortOrder: 'descend'
-                // sortDirections: ['descend']
-
             },
             {
                 title: 'Status',
@@ -112,7 +110,6 @@ class Order extends React.Component {
                 dataIndex: 'actions',
             },
         ];
-
         return (
             <div>
                 <CreateOrder />
