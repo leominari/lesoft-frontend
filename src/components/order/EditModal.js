@@ -1,12 +1,12 @@
 import React from 'react'
-import { Modal, Button, Form } from 'antd';
+import { Modal, Button, Form, notification } from 'antd';
 import SelectColaborator from '../colaborator/SelectColaborator';
-import ItensTable from './crud/ItensTable';
 import { getToken } from '../../utils/auth';
 import api from '../../services/api';
-import { OrderStore } from '../../redux/store';
-import { orderAction } from '../../redux/actions';
+import { OrderStore, } from '../../redux/store';
+import { orderAction, } from '../../redux/actions';
 import { notifSuccess, notifError } from '../helpers/notfication';
+import ItensTableEdit from './ItensTableEdit';
 
 class EditModal extends React.Component {
   constructor(props) {
@@ -16,10 +16,30 @@ class EditModal extends React.Component {
       confirmLoading: false,
       ModalVisible: false
     };
-    console.log(this.props.order)
   }
 
-  
+  componentDidMount() {
+    const getProducts = async () => {
+      await api.get('/orderproduct/' + this.props.order.id + '?token=' + getToken()).then((response) => {
+        if (response.status === 200) {
+          this.order.products = response.data
+        } else {
+          notification.open({
+            message: 'Erro no Cadastro',
+            description:
+              'Ocorreu um erro no cadastro, entre em contato com a adminitração do sistema.',
+            onClick: () => {
+              console.log('Notification Clicked!');
+            },
+          })
+        }
+
+      })
+    }
+    getProducts()
+
+  }
+
   newOrder = async () => {
     const obj = {
       idClient: this.order.idClient,
@@ -64,13 +84,11 @@ class EditModal extends React.Component {
 
 
     const openEdit = () => {
-      console.log(this.props.order)
-  
       this.setState({
         ModalVisible: !this.state.ModalVisible
       })
     }
-  
+
 
     const showModal = () => {
       this.setState({
@@ -111,7 +129,7 @@ class EditModal extends React.Component {
               <SelectColaborator type="client" form={this.order} selected={this.props.order.Client} />
             </Form.Item>
             <Form.Item>
-              <ItensTable form={this.order} />
+              <ItensTableEdit form={this.order} orderid={this.props.order.id} />
             </Form.Item>
           </Form>
         </Modal>

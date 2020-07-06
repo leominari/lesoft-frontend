@@ -1,12 +1,10 @@
 import React from 'react'
 import { Button, Row, InputNumber } from 'antd'
 import SelectProduct from '../../product/SelectProduct'
-import { OrderProductStore } from '../../../redux/store'
 
 import {
     PlusCircleOutlined
 } from '@ant-design/icons'
-import { orderProductAction } from '../../../redux/actions'
 
 
 class AddProductTable extends React.Component {
@@ -25,16 +23,14 @@ class AddProductTable extends React.Component {
 
     render() {
         const addCart = () => {
-            OrderProductStore.dispatch({
-                type: orderProductAction.ADD,
-                products: {
-                    key: this.product.productId,
-                    name: this.product.productName,
-                    price: this.state.price,
-                    quantity: this.state.quantity,
-                    unity: this.product.productUnity
-                }
+            const pl = this.props.productList
+            pl.push({
+                key: this.props.data.idProduct,
+                name: this.props.data.productName,
+                price: this.props.data.price,
+                quantity: this.props.data.quantity
             })
+            this.props.setProductList(pl)
             this.setState({
                 quantity: '',
                 price: ''
@@ -44,6 +40,7 @@ class AddProductTable extends React.Component {
 
         const addQuantity = (value) => {
             if (value) {
+                this.props.data.quantity = value
                 this.setState({
                     quantity: value
                 })
@@ -58,6 +55,7 @@ class AddProductTable extends React.Component {
 
         const addPrice = (value) => {
             if (value) {
+                this.props.data.price = value
                 this.setState({
                     price: value
                 })
@@ -74,7 +72,7 @@ class AddProductTable extends React.Component {
 
                 <p>Adicionar Produto</p>
                 <Row className="distancia-produto">
-                    <SelectProduct form={this.product} name="produto" className="box-produto" />
+                    <SelectProduct form={this.product} data={this.props.data} name="produto" className="box-produto" />
                     <div className="box-preco">
                         <InputNumber
                             placeholder="0,00"

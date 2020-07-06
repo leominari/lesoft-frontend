@@ -53,10 +53,12 @@ class SelectColaborator extends React.Component {
           this.setState({
             selected: value
           })
-          console.log(this.state.selected)
           break;
         case "client":
           this.props.form.idClient = value
+          this.setState({
+            selected: value
+          })
           break;
         default:
           break;

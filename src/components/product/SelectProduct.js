@@ -28,6 +28,9 @@ class SelectProduct extends React.Component {
   render() {
 
     const onChange = (value) => {
+      this.props.data.idProduct = this.state.products[value].id
+      this.props.data.productName = this.state.products[value].name
+
       this.props.form.productId = this.state.products[value].id;
       this.props.form.productName = this.state.products[value].name
       this.props.form.productUnity = this.state.products[value].unity

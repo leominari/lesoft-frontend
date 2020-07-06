@@ -1,11 +1,9 @@
 import React from 'react'
 import { Button, Typography } from 'antd'
-import { OrderProductStore } from '../../../redux/store'
-import SelectProduct from './AddProductTable'
+import AddProductTable from './AddProductTable'
 import {
     MinusSquareOutlined
 } from '@ant-design/icons'
-import { orderProductAction } from '../../../redux/actions'
 const { Text } = Typography
 
 
@@ -15,16 +13,20 @@ class ItensTable extends React.Component {
         this.list = []
         this.state = {
             order: [],
-            total: 0
+            total: 0,
+            products: []
         }
+        this.data = {}
     }
 
-    componentDidMount() {
+
+    render() {
 
         const deleteItem = (e) => {
-            OrderProductStore.dispatch({
-                type: orderProductAction.REMOVE,
-                product: e.target.value
+            let pl = this.state.products.filter(element => element.key !== parseInt(e.target.value))
+            this.setState({
+                products: pl,
+                order: orderRender(pl)
             })
         }
 
@@ -37,7 +39,6 @@ class ItensTable extends React.Component {
                 total: temp
             })
         }
-
 
         const orderRender = (data) => {
             const temp = []
@@ -58,21 +59,17 @@ class ItensTable extends React.Component {
             return temp
         }
 
-
-        this.unsubscribe = OrderProductStore.subscribe(() => {
+        const setProductList = (pl) => {
             this.setState({
-                order: orderRender(OrderProductStore.getState())
+                products: pl,
+                order: orderRender(pl)
             })
-        });
-    }
-
-
-    render() {
+        }
 
         return (
             <>
 
-                <SelectProduct />
+                <AddProductTable data={this.data} setProductList={setProductList} productList={this.state.products} />
                 <table className="table-auto">
                     <colgroup>
                         <col className="col-auto"></col>
@@ -102,9 +99,6 @@ class ItensTable extends React.Component {
         )
 
 
-    }
-    componentWillUnmount() {
-        this.unsubscribe();
     }
 }
 

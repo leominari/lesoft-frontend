@@ -2,7 +2,6 @@ import { createStore } from 'redux';
 import {
     colaboratorAction,
     productAction,
-    orderProductAction,
     orderAction,
     accountAction,
     transactionAction,
@@ -25,20 +24,6 @@ const productReducer = (state = [], action = {}) => {
     return state;
 }
 
-const orderProductReducer = (state = [], action = {}) => {
-    if (action.type === orderProductAction.ADD) {
-        state.push(action.products)
-        return state
-    }
-
-    if (action.type === orderProductAction.REMOVE) {
-        const prods = state
-        state = prods.filter(prod => prod.key != action.product)
-        return state
-    }
-
-    return state;
-}
 
 const orderReducer = (state = [], action = {}) => {
     if (action.type === orderAction.SET) {
@@ -78,7 +63,6 @@ const Bill2Reducer = (state = [], action = {}) => {
 export const ColaboratorStore = createStore(colaboratorReducer)
 export const ProductStore = createStore(productReducer)
 export const OrderStore = createStore(orderReducer)
-export const OrderProductStore = createStore(orderProductReducer)
 export const AccountStore = createStore(AccountReducer)
 export const TransactionStore = createStore(TransactionReducer)
 export const Bill2Store = createStore(Bill2Reducer)

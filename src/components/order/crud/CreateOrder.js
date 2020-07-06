@@ -152,7 +152,8 @@ class CreateOrder extends React.Component {
                             <Button type="primary" htmlType="submit">
                                 Cadastrar
                             </Button>
-                            {/* <Button onClick={()=>{console.log(this.order)}}>ver</Button> */}
+
+                            <Button onClick={()=>{console.log(this.order)}}>ver</Button>
                         </Form.Item>
                     </Form>
                 </Modal>

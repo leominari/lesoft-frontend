@@ -7,10 +7,6 @@ export const productAction = {
 export const orderAction = {
     SET: "SET_ORDERS"
 }
-export const orderProductAction = {
-    ADD: "ADD_ORDERPRODUCTS",
-    REMOVE: "REMOVE_ORDERPRODUCTS"
-}
 
 export const accountAction = {
     SET: "ADD_ACCOUNTS"
