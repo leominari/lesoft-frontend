@@ -3,14 +3,21 @@ import {
     Form,
     Input,
     Button,
-    DatePicker,
     Select,
+    Checkbox,
+    Row,
 } from 'antd';
 
 const { Option } = Select;
 
 class PessoaJuridica extends React.Component {
 
+    constructor(props){
+        super(props)
+        this.state = {
+            ieCheck: false
+        }
+    }
 
     onGenderChange(value) {
         console.log(value)
@@ -40,10 +47,16 @@ class PessoaJuridica extends React.Component {
             },
         };
 
-        const onFinish = () => {
-            console.log('finish')
+        const onFinish = (values) => {
+            console.log(values)
+            this.props.onClose()
         }
-
+        
+        const checkChange = () => {
+            this.setState({
+                ieCheck: !this.state.ieCheck
+            })
+        }
 
         return (
             <Form
@@ -53,43 +66,64 @@ class PessoaJuridica extends React.Component {
                 scrollToFirstError
             >
                 <Form.Item
-                    name="name"
-                    label="Nome Completo"
+                    name="razaoSocial"
+                    label="Razão Social"
                 >
                     <Input />
                 </Form.Item>
 
                 <Form.Item
-                    name="cpf"
-                    label="CPF"
+                    name="nomeFantasia"
+                    label="Nome Fantasia"
+                >
+                    <Input />
+                </Form.Item>
+
+                <Form.Item
+                    name="cnpj"
+                    label="CNPJ"
                     hasFeedback
                 >
                     <Input />
                 </Form.Item>
 
                 <Form.Item
-                    name="rg"
-                    label="RG"
-                    hasFeedback
+                    name="ie"
+                    label="Ins. Estadual"
+                >
+                    <Row>
+                        <Input disabled={this.state.ieCheck}/>
+                        <Checkbox onChange={checkChange}>Isento</Checkbox>
+                    </Row>
+                </Form.Item>
+                <Form.Item 
+                    name="im" 
+                    label="Ins. Municipal"
                 >
                     <Input />
                 </Form.Item>
-                <Form.Item name="birthDate" label="Data Nascimento">
-                    <DatePicker />
-                </Form.Item>
-                <Form.Item
-                    name="gender"
-                    label="Sexo"
+
+                <Form.Item 
+                    name="icms" 
+                    label="Contribuinte ICMS" 
+                    valuePropName="checked"
                 >
-                    <Select
-                        placeholder="Select a option and change input text above"
-                        onChange={this.onGenderChange}
-                        allowClear
-                    >
-                        <Option value="male">Masculino</Option>
-                        <Option value="female">Feminino</Option>
-                        <Option value="other">Outro</Option>
-                    </Select>
+                    <Checkbox></Checkbox>                
+                </Form.Item>
+                
+                <Form.Item 
+                    name="consumidorFinal" 
+                    label="Consumidor Final" 
+                    valuePropName="checked"
+                >
+                    <Checkbox></Checkbox>                
+                </Form.Item>
+
+                <Form.Item
+                    name="cep"
+                    label="CEP"
+                >
+                    <Input />
                 </Form.Item>
 
                 <Form.Item
@@ -157,12 +191,12 @@ class PessoaJuridica extends React.Component {
                     name="observation"
                     label="Observações"
                 >
-                    <Input />
+                    <Input.TextArea />
                 </Form.Item>
                 <Form.Item {...tailFormItemLayout}>
                     <Button type="primary" htmlType="submit">
-                        Register
-                </Button>
+                        Registrar
+                    </Button>
                 </Form.Item>
             </Form>
         );

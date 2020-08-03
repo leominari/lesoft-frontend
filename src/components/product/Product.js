@@ -7,7 +7,6 @@ import { ProductStore } from '../../redux/store';
 import dProduct from '../data/dProduct';
 
 
-
 class Product extends React.Component {
 
     constructor(props) {
@@ -26,7 +25,7 @@ class Product extends React.Component {
                 temp.push({
                     key: element.id,
                     name: element.name,
-                    price: element.price,
+                    price: element.value,
                     unity: element.unity
                 })
             });

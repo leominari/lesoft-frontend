@@ -10,29 +10,35 @@ class ModalColaborator extends React.Component {
         super(props)
         this.state = {
             ModalVisible: false,
-            typeColaborator: 0
+            typeColaborator: 0,
+            register: false
         }
     }
+
+
 
     render() {
 
         const selectColab = (e) => {
-            this.setState({
+            this.setState({ 
                 typeColaborator: e.target.value
             })
         }
+
+
 
         const ColaboratorType = () => {
             switch (this.state.typeColaborator) {
                 case 0:
                     return <></>
                 case "PF":
-                    return <PessoaFisica />
+                    return <PessoaFisica onClose={showModal}/>
                 case "PJ":
-                    return <PessoaJuridica />
+                    return <PessoaJuridica onClose={showModal}/>
                 default:
                     break;
             }
+
         }
 
 
@@ -48,12 +54,13 @@ class ModalColaborator extends React.Component {
             <div>
                 <Button onClick={showModal}>
                     Novo Colaborador
-                    </Button>
+                </Button>
                 <Modal
                     title="Novo Colaborador"
                     visible={this.state.ModalVisible}
-                    footer={false}
                     onCancel={showModal}
+                    destroyOnClose={true}
+                    footer={false}
                 >
                     <Radio.Group onChange={selectColab} >
                         <Radio value={"PF"}>Pessoa Fisica</Radio>
@@ -63,6 +70,12 @@ class ModalColaborator extends React.Component {
                 </Modal>
             </div>
         )
+    }
+
+    componentWillUnmount(){
+        this.setState({
+            typeColaborator: 0
+        })
     }
 
 }

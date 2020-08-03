@@ -10,7 +10,9 @@ import {
 const { Option } = Select;
 
 class PessoaFisica extends React.Component {
-
+    constructor(props){
+        super(props)
+    }
 
     onGenderChange(value) {
         console.log(value)
@@ -42,6 +44,7 @@ class PessoaFisica extends React.Component {
 
         const onFinish = (values) => {
             console.log(values)
+            this.props.onClose()
         }
 
 
@@ -82,7 +85,7 @@ class PessoaFisica extends React.Component {
                     label="Sexo"
                 >
                     <Select
-                        placeholder="Select a option and change input text above"
+                        placeholder="Selecione o sexo"
                         onChange={this.onGenderChange}
                         allowClear
                     >
@@ -157,11 +160,11 @@ class PessoaFisica extends React.Component {
                     name="observation"
                     label="Observações"
                 >
-                    <Input />
+                    <Input.TextArea />
                 </Form.Item>
                 <Form.Item {...tailFormItemLayout}>
-                    <Button type="primary" htmlType="submit">
-                        Register
+                    <Button type="primary" >
+                        Registrar
                 </Button>
                 </Form.Item>
             </Form>
