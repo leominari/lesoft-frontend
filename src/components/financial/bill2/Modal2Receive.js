@@ -43,11 +43,11 @@ class Modal2Receive extends React.Component {
                 idAccount: this.data.idAccount,
                 token: getToken()
             }
-            await api.post('/bill2', obj).then((response) => {
+            await api.post('/bill', obj).then((response) => {
 
                 if (response.status === 200) {
                     if (response.data) {
-                        api.get('/bill2?token=' + getToken()).then((response) => {
+                        api.get('/bill?token=' + getToken()).then((response) => {
                             if (response.status === 200) {
                                 Bill2Store.dispatch({
                                     type: Bill2Action.SET,

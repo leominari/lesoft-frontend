@@ -62,7 +62,7 @@ class CreateOrder extends React.Component {
                 token: getToken()
             }
 
-            const response = await api.post('/bill2', obj)
+            const response = await api.post('/bill', obj)
             if (response.status === 200) {
                 Bill2Store.dispatch({
                     type: Bill2Action.SET,

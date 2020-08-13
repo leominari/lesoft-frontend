@@ -64,7 +64,6 @@ class ItensTableEdit extends React.Component {
 
 
     componentDidMount() {
-        console.log(this.props.orderid)
         const getProducts = async () => {
             await api.get('/orderproduct/' + this.props.orderid + '?token=' + getToken()).then((response) => {
                 if (response.status === 200) {
@@ -72,7 +71,6 @@ class ItensTableEdit extends React.Component {
                         products: response.data,
                         order: this.orderRender(response.data)
                     })
-                    console.log(response.data)
                 } else {
                 }
 

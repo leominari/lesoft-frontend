@@ -3,25 +3,26 @@ import {
     Form,
     Input,
     Button,
-    Select,
     Checkbox,
     Row,
 } from 'antd';
 
-const { Option } = Select;
+import { notifError, notifSuccess } from '../../helpers/notfication'
+import api from '../../../services/api'
+import { getToken } from '../../../utils/auth'
+import dColaborator from '../../data/dColaborator'
+
+const ColaboratorController = new dColaborator()
 
 class PessoaJuridica extends React.Component {
 
-    constructor(props){
+    constructor(props) {
         super(props)
         this.state = {
             ieCheck: false
         }
     }
 
-    onGenderChange(value) {
-        console.log(value)
-    }
 
     render() {
         const formItemLayout = {
@@ -47,11 +48,23 @@ class PessoaJuridica extends React.Component {
             },
         };
 
-        const onFinish = (values) => {
-            console.log(values)
-            this.props.onClose()
+        const newColaborator = async (values) => {
+            const response = await api.post('/colaborator', {
+                ...values,
+                type: 'pj',
+                token: getToken()
+            })
+            if (response.status === 200) {
+                this.props.onClose()
+                notifSuccess('Colaborador cadastrado!', '')
+                ColaboratorController.getAllColaborators()
+                return true
+            } else {
+                notifError('Erro no Cadastro', 'Ocorreu um erro no cadastro, entre em contato com a adminitração do sistema.')
+                return false
+            }
         }
-        
+
         const checkChange = () => {
             this.setState({
                 ieCheck: !this.state.ieCheck
@@ -62,7 +75,7 @@ class PessoaJuridica extends React.Component {
             <Form
                 {...formItemLayout}
                 name="register"
-                onFinish={onFinish}
+                onFinish={newColaborator}
                 scrollToFirstError
             >
                 <Form.Item
@@ -92,31 +105,31 @@ class PessoaJuridica extends React.Component {
                     label="Ins. Estadual"
                 >
                     <Row>
-                        <Input disabled={this.state.ieCheck}/>
+                        <Input disabled={this.state.ieCheck} />
                         <Checkbox onChange={checkChange}>Isento</Checkbox>
                     </Row>
                 </Form.Item>
-                <Form.Item 
-                    name="im" 
+                <Form.Item
+                    name="im"
                     label="Ins. Municipal"
                 >
                     <Input />
                 </Form.Item>
 
-                <Form.Item 
-                    name="icms" 
-                    label="Contribuinte ICMS" 
+                <Form.Item
+                    name="icms"
+                    label="Contribuinte ICMS"
                     valuePropName="checked"
                 >
-                    <Checkbox></Checkbox>                
+                    <Checkbox></Checkbox>
                 </Form.Item>
-                
-                <Form.Item 
-                    name="consumidorFinal" 
-                    label="Consumidor Final" 
+
+                <Form.Item
+                    name="consumidorFinal"
+                    label="Consumidor Final"
                     valuePropName="checked"
                 >
-                    <Checkbox></Checkbox>                
+                    <Checkbox></Checkbox>
                 </Form.Item>
 
                 <Form.Item

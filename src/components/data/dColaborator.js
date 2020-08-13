@@ -21,11 +21,12 @@ class dColaborator {
     tableData(data) {
         const temp = []
         data.forEach(element => {
-            temp.push({
-                key: element.id,
-                name: element.name,
-                type: element.type
-            })
+            if (element.typeName !== "admin")
+                temp.push({
+                    key: element.id,
+                    name: element.name,
+                    type: element.typeName
+                })
         });
         return temp
     }

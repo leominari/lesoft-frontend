@@ -19,6 +19,7 @@ class Colaborator extends React.Component {
         const Colaborator = new dColaborator();
         this.unsubscribe = ColaboratorStore.subscribe(() => {
             const temp = ColaboratorStore.getState();
+            console.log(temp)
             this.setState({
                 colaborators: Colaborator.tableData(temp),
             })
@@ -44,6 +45,11 @@ class Colaborator extends React.Component {
                 title: 'Tipo',
                 dataIndex: 'type',
                 key: 'type'
+            },
+            {
+                title: 'Ações',
+                dataIndex: 'acao',
+                key: 'acao'
             },
         ];
 

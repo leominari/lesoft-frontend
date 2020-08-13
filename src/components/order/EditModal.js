@@ -40,41 +40,6 @@ class EditModal extends React.Component {
 
   }
 
-  newOrder = async () => {
-    const obj = {
-      idClient: this.order.idClient,
-      idSalesman: this.order.idSalesman,
-      products: this.order.products,
-      status: "opened",
-      token: getToken()
-    }
-
-    await api.post('/order', obj).then(async function (response) {
-      if (response.status === 200) {
-        if (response.data) {
-          await api.get('/order?token=' + getToken()).then(function (response) {
-            if (response.status === 200) {
-              OrderStore.dispatch({
-                type: orderAction.SET,
-                orders: response.data
-              })
-            }
-          })
-        }
-        notifSuccess('Pedido Atualizado.', '')
-      } else {
-        notifError('Erro ao gerar conta a receber.', 'Entre em contato com a administração do sistema.')
-      }
-    }).catch(function (error) {
-      console.log(error)
-    })
-
-    this.setState({
-      ModalVisible: false
-    })
-    this.order = {}
-  }
-
   render() {
     const { confirmLoading } = this.state;
     const layout = {
@@ -96,17 +61,22 @@ class EditModal extends React.Component {
       })
     };
 
-    const handleOk = () => {
-      this.setState({
-        ModalText: 'The modal will be closed after two seconds',
-        confirmLoading: true,
-      });
-      setTimeout(() => {
-        this.setState({
-          ModalVisible: false,
-          confirmLoading: false,
-        });
-      }, 2000);
+    const handleOk = async () => {
+      console.log(this.order)
+      const obj = {
+        ...this.order,
+        token: getToken()
+      }
+      await api.put('/order', obj).then(async function (response) {
+        if (response.status === 200) {
+          console.log(response.data)
+          // notifSuccess('Pedido Atualizado.', '')
+        } else {
+          notifError('Erro ao gerar conta a receber.', 'Entre em contato com a administração do sistema.')
+        }
+      }).catch(function (error) {
+        console.log(error)
+      })
     };
 
 
@@ -121,7 +91,7 @@ class EditModal extends React.Component {
           destroyOnClose={true}
           onCancel={showModal}
         >
-          <Form {...layout} name="nest-messages" onFinish={this.newOrder}>
+          <Form {...layout} name="nest-messages">
             <Form.Item label="Vendedor">
               <SelectColaborator type="salesman" form={this.order} selected={this.props.order.Salesman} />
             </Form.Item>

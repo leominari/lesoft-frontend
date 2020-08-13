@@ -15,7 +15,6 @@ moment.updateLocale('pt', {
     monthsShort: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"],
 });
 
-
 class Bill2 extends React.Component {
     constructor(props) {
         super(props)
@@ -32,7 +31,7 @@ class Bill2 extends React.Component {
         })
 
         async function getAllBill2() {
-            await api.get('/bill2?token=' + getToken()).then(response => {
+            await api.get('/bill?token=' + getToken()).then(response => {
                 Bill2Store.dispatch({
                     type: Bill2Action.SET,
                     bill2s: response.data
@@ -93,7 +92,6 @@ class Bill2 extends React.Component {
                 bill2.forEach(element => {
                     const elementDate = new Date(element.date)
                     if (date.toDateString() === elementDate.toDateString()) {
-                        console.log('aooo')
                         if (element.type === "pay") {
                             listData.color = overdue(today._d, date) ? "#FF0000" : "#0000FF"
                             listData.pay.push(element)
@@ -179,3 +177,6 @@ class Bill2 extends React.Component {
 }
 
 export default Bill2;
+
+
+

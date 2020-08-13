@@ -7,13 +7,16 @@ import {
     Select,
 } from 'antd';
 
+import { notifError, notifSuccess } from '../../helpers/notfication'
+import api from '../../../services/api'
+import { getToken } from '../../../utils/auth'
+import dColaborator from '../../data/dColaborator'
+
+const ColaboratorController = new dColaborator()
+
 const { Option } = Select;
 
 class PessoaFisica extends React.Component {
-    constructor(props){
-        super(props)
-    }
-
     onGenderChange(value) {
         console.log(value)
     }
@@ -42,17 +45,33 @@ class PessoaFisica extends React.Component {
             },
         };
 
-        const onFinish = (values) => {
+        const newColaborator = async (values) => {
+            const birth = values.birthDate
             console.log(values)
-            this.props.onClose()
+            values.birthDate = birth.year() + "-" + birth.month() + "-" + birth.date()
+            const response = await api.post('/colaborator', {
+                ...values,
+                type: 'pf',
+                token: getToken()
+            })
+            if (response.status === 200) {
+                this.props.onClose()
+                notifSuccess('Colaborador cadastrado!', '')
+                ColaboratorController.getAllColaborators()
+                return true
+            } else {
+                notifError('Erro no Cadastro', 'Ocorreu um erro no cadastro, entre em contato com a adminitração do sistema.')
+                return false
+            }
         }
+
 
 
         return (
             <Form
                 {...formItemLayout}
                 name="register"
-                onFinish={onFinish}
+                onFinish={newColaborator}
                 scrollToFirstError
             >
                 <Form.Item
@@ -94,6 +113,14 @@ class PessoaFisica extends React.Component {
                         <Option value="other">Outro</Option>
                     </Select>
                 </Form.Item>
+
+                <Form.Item
+                    name="cep"
+                    label="CEP"
+                >
+                    <Input />
+                </Form.Item>
+
 
                 <Form.Item
                     name="street"
@@ -163,7 +190,7 @@ class PessoaFisica extends React.Component {
                     <Input.TextArea />
                 </Form.Item>
                 <Form.Item {...tailFormItemLayout}>
-                    <Button type="primary" >
+                    <Button type="primary" htmlType="submit" >
                         Registrar
                 </Button>
                 </Form.Item>
