@@ -61,16 +61,27 @@ class EditModal extends React.Component {
       })
     };
 
+
     const handleOk = async () => {
       console.log(this.order)
       const obj = {
         ...this.order,
+        idOrder: this.props.order.id,
         token: getToken()
       }
+
       await api.put('/order', obj).then(async function (response) {
         if (response.status === 200) {
-          console.log(response.data)
-          // notifSuccess('Pedido Atualizado.', '')
+          if (response.data === true) {
+            showModal();
+            notifSuccess('Pedido Atualizado', '')
+            const getUrl = '/order?token=' + getToken()
+            const response = await api.get(getUrl)
+            OrderStore.dispatch({
+              type: orderAction.SET,
+              orders: response.data
+            })
+          }
         } else {
           notifError('Erro ao gerar conta a receber.', 'Entre em contato com a administração do sistema.')
         }

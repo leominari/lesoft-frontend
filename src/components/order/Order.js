@@ -20,58 +20,62 @@ class Order extends React.Component {
     }
 
 
+    async getAllOrders() {
+        const getUrl = '/order?token=' + getToken()
+        const response = await api.get(getUrl)
+        OrderStore.dispatch({
+            type: orderAction.SET,
+            orders: response.data
+        })
+    }
+
+
+    tableData(data) {
+        const temp = []
+        data.forEach(element => {
+            let date = new Date(element.createDate)
+            let day = date.getDate()
+            let month = date.getMonth() + 1
+            let year = date.getFullYear()
+            let status
+            switch (element.status) {
+                case "closed":
+                    status = <Tag color="#108ee9">FECHADO</Tag>
+                    break;
+                case "received":
+                    status = <Tag color="#87d068">RECEBIDO</Tag>
+                    break;
+                case "opened":
+                    status = <Tag color="#f50">EM ABERTO</Tag>
+                    break;
+                default:
+                    status = <Tag color="#fff">NENHUM</Tag>
+                    break;
+            }
+            temp.push({
+                key: element.id,
+                status: status,
+                idClient: element.Client,
+                idSalesman: element.Salesman,
+                finalPrice: 'R$ ' + Number(element.price).toFixed(2),
+                date: day + '/' + month + '/' + year,
+                actions: <EditModal order={element} />
+            })
+        });
+        return temp
+    }
+
+
+
     componentDidMount() {
-        const tableData = (data) => {
-            const temp = []
-            data.forEach(element => {
-                let date = new Date(element.createDate)
-                let day = date.getDate()
-                let month = date.getMonth() + 1
-                let year = date.getFullYear()
-                let status
-                switch (element.status) {
-                    case "closed":
-                        status = <Tag color="#108ee9">FECHADO</Tag>
-                        break;
-                    case "received":
-                        status = <Tag color="#87d068">RECEBIDO</Tag>
-                        break;
-                    case "opened":
-                        status = <Tag color="#f50">EM ABERTO</Tag>
-                        break;
-                    default:
-                        status = <Tag color="#fff">NENHUM</Tag>
-                        break;
-                }
-                temp.push({
-                    key: element.id,
-                    status: status,
-                    idClient: element.Client,
-                    idSalesman: element.Salesman,
-                    finalPrice: 'R$ ' + Number(element.price).toFixed(2),
-                    date: day + '/' + month + '/' + year,
-                    actions: <EditModal order={element} />
-                })
-            });
-            return temp
-        }
 
         this.unsubscribe = OrderStore.subscribe(() => {
             this.setState({
-                orders: tableData(OrderStore.getState())
+                orders: this.tableData(OrderStore.getState())
             })
         })
 
-        async function getAllOrders() {
-            const getUrl = '/order?token=' + getToken()
-            const response = await api.get(getUrl)
-            OrderStore.dispatch({
-                type: orderAction.SET,
-                orders: response.data
-            })
-        }
-
-        getAllOrders();
+        this.getAllOrders();
 
     }
 

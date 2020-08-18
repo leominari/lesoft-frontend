@@ -67,6 +67,7 @@ class ItensTableEdit extends React.Component {
         const getProducts = async () => {
             await api.get('/orderproduct/' + this.props.orderid + '?token=' + getToken()).then((response) => {
                 if (response.status === 200) {
+                    console.log(response.data)
                     this.setState({
                         products: response.data,
                         order: this.orderRender(response.data)
