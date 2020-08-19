@@ -18,7 +18,7 @@ import Account from './components/account/Account'
 import ViewAccount from './components/account/ViewAccount'
 
 //Financieiro
-import Bill2 from './components/financial/bill2/Bill2'
+import Bill from './components/financial/bill/Bill'
 
 const Routes = () => {
     return (
@@ -72,7 +72,7 @@ export const FinancialRoutes = () => {
         <Switch>
             <Route>
                 <Route path="/home/financeiro/">
-                    <Bill2 />
+                    <Bill />
                 </Route>
             </Route>
         </Switch>

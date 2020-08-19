@@ -73,6 +73,18 @@ class AddProductTable extends React.Component {
                 <p>Adicionar Produto</p>
                 <Row className="distancia-produto">
                     <SelectProduct form={this.product} data={this.props.data} name="produto" className="box-produto" />
+
+                    <div className="box-quantidade">
+                        <InputNumber
+                            style={{width: 100}}
+                            value={this.state.quantity}
+                            placeholder="Quantidade"
+                            parser={value => value.replace(/\$\s?|(,*)/g, '')}
+                            decimalSeparator=","
+                            onChange={addQuantity}
+                        />
+                    </div>
+
                     <div className="box-preco">
                         <InputNumber
                             placeholder="0,00"
@@ -81,17 +93,6 @@ class AddProductTable extends React.Component {
                             decimalSeparator=","
                             onChange={addPrice}
                             addonBefore="R$"
-                            />
-                            </div>
-
-                    <div className="box-quantidade">
-                        <InputNumber
-                            value={this.state.quantity}
-                            placeholder="Quantidade"
-                            parser={value => value.replace(/\$\s?|(,*)/g, '')}
-                            decimalSeparator=","
-                            onChange={addQuantity}
-
                         />
                     </div>
 

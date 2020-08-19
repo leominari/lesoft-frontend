@@ -17,10 +17,6 @@ const ColaboratorController = new dColaborator()
 const { Option } = Select;
 
 class PessoaFisica extends React.Component {
-    onGenderChange(value) {
-        console.log(value)
-    }
-
     render() {
         const formItemLayout = {
             labelCol: {
@@ -47,7 +43,6 @@ class PessoaFisica extends React.Component {
 
         const newColaborator = async (values) => {
             const birth = values.birthDate
-            console.log(values)
             values.birthDate = birth.year() + "-" + birth.month() + "-" + birth.date()
             const response = await api.post('/colaborator', {
                 ...values,

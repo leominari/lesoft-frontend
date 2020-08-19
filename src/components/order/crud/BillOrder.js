@@ -3,7 +3,7 @@ import { DatePicker, Row } from 'antd'
 import SelectAccount from '../../account/SelectAccount'
 import '../styles/pedido.css'
 
-class Bill2Order extends React.Component {
+class BillOrder extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -22,7 +22,9 @@ class Bill2Order extends React.Component {
         return <>
             <Row>
                 <DatePicker
+                    style={{width: 120}}
                     size="small"
+                    placeholder="Data"
                     format={dateFormat}
                     onSelect={handleDataPicked}
                     className="distancia-direita10"
@@ -33,4 +35,4 @@ class Bill2Order extends React.Component {
     
     }
 }
-export default Bill2Order;
+export default BillOrder;

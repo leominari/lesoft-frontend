@@ -19,7 +19,6 @@ class Colaborator extends React.Component {
         const Colaborator = new dColaborator();
         this.unsubscribe = ColaboratorStore.subscribe(() => {
             const temp = ColaboratorStore.getState();
-            console.log(temp)
             this.setState({
                 colaborators: Colaborator.tableData(temp),
             })

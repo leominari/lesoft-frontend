@@ -3,6 +3,7 @@ import './login.css'
 import { Form, Input, Button } from 'antd'
 import { setToken, isAuthenticated } from "../../utils/auth"
 import api from '../../services/api'
+import { notifError, notifSucces } from '../helpers/notfication'
 
 class Login extends React.Component {
     constructor(props) {
@@ -31,11 +32,15 @@ class Login extends React.Component {
 
         const onFinish = values => {
             api.post('login', values)
-                .then(res => {
+                .then((res) => {
+                    console.log(res.data)
+                    console.log(res)
                     if (res.status === 200) {
                         setToken(res.data.token)
                         window.location.replace("/home")
-                    }
+                    }else{
+                        notifError('Usuário ou Senha incorretos.', 'Caso o problema persista entre em contato com o Administrador do sistema.')
+                    }     
                 }).catch(e => console.log(e))
         }
 

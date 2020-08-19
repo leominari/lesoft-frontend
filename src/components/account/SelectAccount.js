@@ -40,7 +40,7 @@ class SelectAccount extends React.Component {
 
         return <>
             <Select
-                style={{ width: 120 }}
+                style={{ width: 180 }}
                 onChange={handleChange}
                 placeholder="Selecione uma Conta"
             >

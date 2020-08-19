@@ -2,15 +2,15 @@ import React from 'react'
 import { Button, Modal, Form } from 'antd'
 import { notifSuccess, notifError } from '../../helpers/notfication'
 import { getToken } from '../../../utils/auth';
-import { orderAction, Bill2Action } from '../../../redux/actions';
-import { OrderStore, Bill2Store } from '../../../redux/store';
+import { orderAction, BillAction } from '../../../redux/actions';
+import { OrderStore, BillStore } from '../../../redux/store';
 import api from '../../../services/api';
 
 import SelectColaborator from '../../colaborator/SelectColaborator'
 import dColaborator from '../../data/dColaborator'
 import dProduct from '../../data/dProduct';
 import ItensTable from './ItensTable'
-import Bill2Order from './Bill2Order'
+import BillOrder from './BillOrder'
 
 const Product = new dProduct()
 const Colaborator = new dColaborator()
@@ -19,7 +19,7 @@ class CreateOrder extends React.Component {
     constructor(props) {
         super(props);
         this.order = {}
-        this.bill2order = {}
+        this.billOrder = {}
         this.state = {
             ModalVisible: false
         }
@@ -52,21 +52,21 @@ class CreateOrder extends React.Component {
             ModalVisible: !this.state.ModalVisible
         });
 
-        const newBill2Order = async () => {
+        const newBillOrder = async () => {
             const obj = {
-                date: this.bill2order.date,
+                date: this.billorder.date,
                 description: "Recebimento de Pedido",
-                value: this.bill2order.value,
+                value: this.billorder.value,
                 type: "receive",
-                idAccount: this.bill2order.idAccount,
+                idAccount: this.billorder.idAccount,
                 token: getToken()
             }
 
             const response = await api.post('/bill', obj)
             if (response.status === 200) {
-                Bill2Store.dispatch({
-                    type: Bill2Action.SET,
-                    bill2s: response.data
+                BillStore.dispatch({
+                    type: BillAction.SET,
+                    bills: response.data
                 })
                 notifSuccess('Conta a receber gerada.', '')
                 return true
@@ -87,9 +87,9 @@ class CreateOrder extends React.Component {
                 status: "opened",
                 token: getToken()
             }
-            if(this.bill2order.date && this.bill2order.idAccount){
-                this.bill2order.value = calcTotal()
-                newBill2Order()
+            if(this.billOrder.date && this.billOrder.idAccount){
+                this.billOrder.value = calcTotal()
+                newBillOrder()
             }
 
             await api.post('/order', obj).then(async function (response) {
@@ -116,7 +116,7 @@ class CreateOrder extends React.Component {
                 ModalVisible: false
             })
             this.order = {}
-            this.bill2order = {}
+            this.billOrder = {}
         }
 
         return (
@@ -130,6 +130,7 @@ class CreateOrder extends React.Component {
                     footer={false}
                     onCancel={showModal}
                     destroyOnClose={true}
+                    width={580}
                 >
                     <Form {...layout} name="nest-messages" onFinish={newOrder}>
 
@@ -143,17 +144,15 @@ class CreateOrder extends React.Component {
                             <ItensTable form={this.order} />
                         </Form.Item>
                         <Form.Item label="Conta a Receber">
-                            <Bill2Order order={this.bill2order} />
+                            <BillOrder order={this.billOrder} />
                         </Form.Item>
-                        <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
+                        <Form.Item wrapperCol={{...layout.wrapperCol, offset: 8 }}>
                             <Button className="distancia-direita10" type="primary" onClick={showModal} >
                                 Cancelar
                             </Button>
                             <Button type="primary" htmlType="submit">
                                 Cadastrar
                             </Button>
-
-                            <Button onClick={()=>{console.log(this.order)}}>ver</Button>
                         </Form.Item>
                     </Form>
                 </Modal>

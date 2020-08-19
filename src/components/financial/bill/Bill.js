@@ -2,12 +2,13 @@ import React from 'react'
 import { Calendar, Badge, Row } from 'antd'
 import ptBR from 'antd/es/locale/pt_BR'
 import moment from 'moment'
-import Modal2Pay from './Modal2Pay'
-import Modal2Receive from './Modal2Receive'
-import { Bill2Store } from '../../../redux/store'
+import ModalPay from './ModalPay'
+import ModalReceive from './ModalReceive'
+import { BillStore } from '../../../redux/store'
 import { getToken } from '../../../utils/auth'
-import { Bill2Action } from '../../../redux/actions'
+import { BillAction } from '../../../redux/actions'
 import api from '../../../services/api'
+import ModalBills from './ModalBills'
 
 moment.updateLocale('pt', {
     weekdaysMin: ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sab"],
@@ -15,31 +16,31 @@ moment.updateLocale('pt', {
     monthsShort: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"],
 });
 
-class Bill2 extends React.Component {
+class Bill extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            bill2: []
+            bill: []
         }
     }
 
     componentDidMount() {
-        this.unsubscribe = Bill2Store.subscribe(() => {
+        this.unsubscribe = BillStore.subscribe(() => {
             this.setState({
-                bill2: Bill2Store.getState()
+                bill: BillStore.getState()
             })
         })
 
-        async function getAllBill2() {
+        async function getAllBills() {
             await api.get('/bill?token=' + getToken()).then(response => {
-                Bill2Store.dispatch({
-                    type: Bill2Action.SET,
-                    bill2s: response.data
+                BillStore.dispatch({
+                    type: BillAction.SET,
+                    bills: response.data
                 })
             })
         }
 
-        getAllBill2();
+        getAllBills();
 
     }
 
@@ -48,7 +49,7 @@ class Bill2 extends React.Component {
         function overdue(td, dt) {
             const today = new Date(td)
             const date = new Date(dt)
-        
+
             if (date.getFullYear() >= today.getFullYear()) {
                 if (date.getFullYear() === today.getFullYear()) {
                     if (date.getMonth() >= today.getMonth()) {
@@ -76,22 +77,24 @@ class Bill2 extends React.Component {
                 return true
             }
         }
-        
-        
+
+
         const getListData = (value) => {
             let listData = {
                 pay: [],
                 receive: [],
                 color: ""
             }
-            const date = new Date(value.year() + "-" + ("00" + (value.month() + 1)).slice(-2) + "-" + value.date())
-            const bill2 = this.state.bill2
-            
+            const date = value.year() + "-" + ("00" + (value.month() + 1)).slice(-2) + "-" + value.date()
+            const bill = this.state.bill
             const today = new moment()
-            if (bill2.length > 0) {
-                bill2.forEach(element => {
+
+            if (bill.length > 0) {
+                bill.forEach(element => {
                     const elementDate = new Date(element.date)
-                    if (date.toDateString() === elementDate.toDateString()) {
+                    const teste = elementDate.getFullYear() + "-" + ("00" + (elementDate.getMonth() + 1)).slice(-2) + "-" + elementDate.getDate()
+                    console.log(date, teste)
+                    if (date === teste) {
                         if (element.type === "pay") {
                             listData.color = overdue(today._d, date) ? "#FF0000" : "#0000FF"
                             listData.pay.push(element)
@@ -104,54 +107,50 @@ class Bill2 extends React.Component {
             }
             return listData
         }
-        
+
         const dateCellRender = (value) => {
             const listData = getListData(value);
             const temp = []
             if (listData.pay.length > 0) {
                 temp.push(
-                    <Badge
-                        className="badge-space"
-                        key="pay"
-                        style={{ backgroundColor: listData.color }}
-                        count={listData.pay.length}
-                    >
-                        <div className="head-example"
-                            onClick={() => { console.log(listData.pay) }}
+                    <div key="pay">
+                        <Badge
+                            className="badge-space"
+                            style={{ backgroundColor: listData.color }}
+                            count={listData.pay.length}
                         >
-                        </div>
-                    </Badge>
+                            <ModalBills data={listData.pay} />
+                        </Badge>
+                    </div>
                 )
             }
             if (listData.receive.length > 0) {
                 temp.push(
-                    <Badge
-                        className="badge-space"
-                        key="receive"
-                        style={{ backgroundColor: '#52c41a' }}
-                        count={listData.receive.length}
-                    >
-                        <div className="head-example"
-                            onClick={() => { console.log(listData.receive) }}
+                    <div key="receive">
+                        <Badge
+                            className="badge-space"
+                            style={{ backgroundColor: '#52c41a' }}
+                            count={listData.receive.length}
                         >
-                        </div>
-                    </Badge>
+                            <ModalBills data={listData.receive} />
+                        </Badge>
+                    </div>
                 )
             }
-        
+
             return (
                 <div className="space-top10">
                     {temp}
                 </div>
             );
         }
-        
+
         const getMonthData = (value) => {
             if (value.month() === 8) {
                 return 1394;
             }
         }
-        
+
         const monthCellRender = (value) => {
             const num = getMonthData(value);
             return num ? (
@@ -161,11 +160,11 @@ class Bill2 extends React.Component {
                 </div>
             ) : null;
         }
-        
+
         return <>
             <Row>
-                <Modal2Receive />
-                <Modal2Pay />
+                <ModalReceive />
+                <ModalPay />
             </Row>
             <Calendar locale={ptBR} dateCellRender={dateCellRender} monthCellRender={monthCellRender} />
         </>
@@ -176,7 +175,7 @@ class Bill2 extends React.Component {
     }
 }
 
-export default Bill2;
+export default Bill;
 
 
 

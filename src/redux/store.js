@@ -5,7 +5,7 @@ import {
     orderAction,
     accountAction,
     transactionAction,
-    Bill2Action
+    BillAction
 } from './actions'
 
 const colaboratorReducer = (state = [], action = {}) => {
@@ -51,9 +51,9 @@ const TransactionReducer = (state = [], action = {}) => {
     return state;
 }
 
-const Bill2Reducer = (state = [], action = {}) => {
-    if (action.type === Bill2Action.SET) {
-        state = action.bill2s
+const BillReducer = (state = [], action = {}) => {
+    if (action.type === BillAction.SET) {
+        state = action.bills
         return state;
     }
     return state;
@@ -65,4 +65,4 @@ export const ProductStore = createStore(productReducer)
 export const OrderStore = createStore(orderReducer)
 export const AccountStore = createStore(AccountReducer)
 export const TransactionStore = createStore(TransactionReducer)
-export const Bill2Store = createStore(Bill2Reducer)
+export const BillStore = createStore(BillReducer)

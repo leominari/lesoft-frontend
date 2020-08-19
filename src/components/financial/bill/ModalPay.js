@@ -1,14 +1,15 @@
 import React from 'react'
 import api from '../../../services/api'
-import { Button, Modal, Form, Input, notification, DatePicker } from 'antd'
+import { Button, Modal, Form, Input, notification, DatePicker, InputNumber } from 'antd'
 import './../styles/financial.css'
 
 import { getToken } from '../../../utils/auth';
-import { Bill2Action } from '../../../redux/actions'
-import { Bill2Store } from '../../../redux/store'
+import { BillAction } from '../../../redux/actions'
+import { BillStore } from '../../../redux/store'
 import SelectAccount from '../../account/SelectAccount'
+import SelectColaborator from '../../colaborator/SelectColaborator';
 
-class Modal2Pay extends React.Component {
+class ModalPay extends React.Component {
     constructor(props) {
         super(props)
         this.data = {}
@@ -19,8 +20,8 @@ class Modal2Pay extends React.Component {
 
     render() {
         const layout = {
-            labelCol: { span: 4 },
-            wrapperCol: { span: 18 },
+            labelCol: { span: 5 },
+            wrapperCol: { span: 36 },
         };
         const dateFormat = 'DD/MM/YYYY'
 
@@ -31,13 +32,14 @@ class Modal2Pay extends React.Component {
             })
         }
 
-        const newBill2Pay = async (values) => {
-            const desc = values.b2p.desc
-            const value = values.b2p.value
-            const dt = values.b2p.date
+        const newBillPay = async (values) => {
+            const obs = values.bp.obs
+            const value = values.bp.value
+            const dt = values.bp.date
             const obj = {
                 date: dt.year() + "-" + (dt.month() + 1) + "-" + dt.date(),
-                description: desc,
+                idColaborator: this.data.idClient,
+                observation: obs,
                 value: value,
                 type: "pay",
                 idAccount: this.data.idAccount,
@@ -49,9 +51,9 @@ class Modal2Pay extends React.Component {
                     if (response.data) {
                         api.get('/bill?token=' + getToken()).then((response) => {
                             if (response.status === 200) {
-                                Bill2Store.dispatch({
-                                    type: Bill2Action.SET,
-                                    bill2s: response.data
+                                BillStore.dispatch({
+                                    type: BillAction.SET,
+                                    bills: response.data
                                 })
                                 this.setState({
                                     ModalVisible: !this.state.ModalVisible
@@ -86,19 +88,27 @@ class Modal2Pay extends React.Component {
                     footer={false}
                     onCancel={showModal}
                 >
-                    <Form {...layout} name="nest-messages" onFinish={newBill2Pay} >
-
-                        <Form.Item name={['b2p', 'desc']} label="Descrição" >
-                            <Input />
+                    <Form {...layout} name="nest-messages" onFinish={newBillPay} >
+                        <Form.Item label="Fornecedor">
+                            <SelectColaborator type="client" form={this.data} />
                         </Form.Item>
-                        <Form.Item name={['b2p', 'value']} label="Valor" >
-                            <Input />
+                        <Form.Item name={['bp', 'value']} label="Valor" >
+                            <InputNumber
+                                placeholder="0,00"
+                                value={this.state.price}
+                                parser={value => value.replace(/\s?|(,*)/g, '')}
+                                decimalSeparator=","
+                                addonBefore="R$"
+                            />
                         </Form.Item>
-                        <Form.Item name={['b2p', 'date']} label="Data" >
+                        <Form.Item name={['bp', 'date']} label="Data" >
                             <DatePicker format={dateFormat} />
                         </Form.Item>
                         <Form.Item label="Conta" >
                             <SelectAccount data={this.data} />
+                        </Form.Item>
+                        <Form.Item name={['bp', 'obs']} label="Observação" >
+                            <Input.TextArea />
                         </Form.Item>
                         <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
                             <Button className="distancia-direita10" type="primary" onClick={showModal} >
@@ -119,4 +129,4 @@ class Modal2Pay extends React.Component {
 
 
 
-export default Modal2Pay
+export default ModalPay

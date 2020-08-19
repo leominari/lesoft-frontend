@@ -16,6 +16,6 @@ export const transactionAction = {
     SET: "ADD_TRANSACTION"
 }
 
-export const Bill2Action = {
+export const BillAction = {
     SET: "ADD_BILL2"
 }

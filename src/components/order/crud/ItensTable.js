@@ -6,7 +6,6 @@ import {
 } from '@ant-design/icons'
 const { Text } = Typography
 
-
 class ItensTable extends React.Component {
     constructor(props) {
         super(props)
@@ -49,6 +48,7 @@ class ItensTable extends React.Component {
                         <td className="ant-table-cell">{element.name}</td>
                         <td className="ant-table-cell">R$ {Number(element.price).toFixed(2)}</td>
                         <td className="ant-table-cell">{element.quantity}</td>
+                        <td className="ant-table-cell">R$ {Number(element.quantity * element.price).toFixed(2)}</td>
                         <td><Button size="small" value={element.key} type="link" danger icon={<MinusSquareOutlined />} onClick={deleteItem}>Deletar</Button></td>
                     </tr>
 
@@ -69,7 +69,7 @@ class ItensTable extends React.Component {
         return (
             <>
 
-                <AddProductTable data={this.data} setProductList={setProductList} productList={this.state.products} />
+                <AddProductTable className="addProductBar" data={this.data} setProductList={setProductList} productList={this.state.products} />
                 <table className="table-auto">
                     <colgroup>
                         <col className="col-auto"></col>
@@ -79,6 +79,7 @@ class ItensTable extends React.Component {
                             <th>Produto</th>
                             <th>Preço</th>
                             <th>Quantidade</th>
+                            <th>Total</th>
                             <th>Opções</th>
                         </tr>
                     </thead>
