@@ -8,7 +8,7 @@ import { BillStore } from '../../../redux/store'
 import { getToken } from '../../../utils/auth'
 import { BillAction } from '../../../redux/actions'
 import api from '../../../services/api'
-import ModalBills from './ModalBills'
+import DrawerBills from './DrawerBill'
 
 moment.updateLocale('pt', {
     weekdaysMin: ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sab"],
@@ -93,7 +93,6 @@ class Bill extends React.Component {
                 bill.forEach(element => {
                     const elementDate = new Date(element.date)
                     const teste = elementDate.getFullYear() + "-" + ("00" + (elementDate.getMonth() + 1)).slice(-2) + "-" + elementDate.getDate()
-                    console.log(date, teste)
                     if (date === teste) {
                         if (element.type === "pay") {
                             listData.color = overdue(today._d, date) ? "#FF0000" : "#0000FF"
@@ -119,7 +118,7 @@ class Bill extends React.Component {
                             style={{ backgroundColor: listData.color }}
                             count={listData.pay.length}
                         >
-                            <ModalBills data={listData.pay} />
+                            <DrawerBills data={listData.pay} type="pay" />
                         </Badge>
                     </div>
                 )
@@ -132,7 +131,7 @@ class Bill extends React.Component {
                             style={{ backgroundColor: '#52c41a' }}
                             count={listData.receive.length}
                         >
-                            <ModalBills data={listData.receive} />
+                            <DrawerBills data={listData.receive} date={value} type="receive"/>
                         </Badge>
                     </div>
                 )
