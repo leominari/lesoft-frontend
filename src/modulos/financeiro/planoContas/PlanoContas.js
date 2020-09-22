@@ -1,12 +1,20 @@
-import React from 'react'
-import './styles/planoContas.css'
+import React from 'react';
+import './styles/planoContas.css';
+import ModalNovaConta from './modal/ModalNovaConta';
 
-export default function PlanoContas(){
+class PlanoContas extends React.Component {
+    contructor(props) {
 
-    return(
-        <div>
-            <h2 className="texto">Plano de Contas</h2>
-
-        </div>
-    );
+    }
+    render() {
+        return <>
+            <ModalNovaConta/>
+            <div>
+                <h2 className="texto">Plano de Contas</h2>
+            </div>
+        </>
+    }
 }
+
+export default PlanoContas;
+

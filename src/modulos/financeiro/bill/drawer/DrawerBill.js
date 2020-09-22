@@ -95,7 +95,7 @@ class DrawerBills extends React.Component {
                 </div>
 
                 <Drawer
-                    title="Basic Drawer"
+                    title="Contas do dia"
                     width={600}
                     closable={false}
                     onClose={this.onClose}

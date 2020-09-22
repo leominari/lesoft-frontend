@@ -10,7 +10,7 @@ class SelectColaborator extends React.Component {
     this.state = {
       colaborators: ColaboratorStore.getState(),
       colaboratorOptions: [],
-      selected: this.props.selected || ""
+      selected: this.props.selected || "-- Selecione --"
     }
   }
 
