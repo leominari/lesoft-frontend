@@ -10,33 +10,28 @@ class SelectPlanoConta extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      selected: this.props.selected || "-- Selecione --",
+      planoContasOption: [],
     }
   }
 
   componentDidMount() {
-    var pc;
+    let optionRows = []
     api.get('/pc?token=' + getToken()).then(response => {
-      console.log(response);
+      response.data.forEach(planoConta => {
+        optionRows.push(<Option key={planoConta.id}>{planoConta.id}.{planoConta.descricao}</Option>)
+      });
+
+      this.setState({
+        planoContasOption: optionRows
+      })
     });
-
-    // let optionRows = []
-    // this.state.colaborators.forEach(colaborator => {
-    //   optionRows.push(<Option key={colaborator.id}>{colaborator.name}</Option>)
-    // });
-
-    // this.setState({
-    //   colaboratorOptions: optionRows
-    // })
-
-
   }
 
   render() {
 
 
     const onChange = (value) => {
-      this.props.form.idPlanoContas = value
+      this.props.form.idPlanoContas = value;
     }
 
     return (
@@ -44,14 +39,13 @@ class SelectPlanoConta extends React.Component {
         showSearch
         style={{ width: 200 }}
         placeholder={"Selecione um Plano de Conta"}
-        value={this.state.selected}
         optionFilterProp="children"
         onChange={onChange}
         filterOption={(input, option) =>
           option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
         }
       >
-        {this.state.opcoes}
+        {this.state.planoContasOption}
       </Select>
     )
   }

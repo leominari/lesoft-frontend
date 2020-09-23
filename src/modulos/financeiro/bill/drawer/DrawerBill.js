@@ -1,7 +1,7 @@
-import React from 'react'
-import api from '../../../../services/api'
-import { Button, Modal, Form, Input, notification, DatePicker, List, Drawer, Table } from 'antd'
-import './../styles/financial.css'
+import React from 'react';
+// import api from '../../../../services/api'
+import { Button, Drawer, Table } from 'antd';
+import './../styles/financial.css';
 
 
 class DrawerBills extends React.Component {

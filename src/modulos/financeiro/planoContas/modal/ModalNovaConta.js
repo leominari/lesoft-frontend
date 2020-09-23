@@ -1,8 +1,9 @@
 import React from 'react';
 import api from '../../../../services/api';
-import { Button, Modal, Form, Input, notification, DatePicker, InputNumber } from 'antd';
+import { getToken } from '../../../../utils/auth';
+import { Button, Modal, Form, Input } from 'antd';
 import '../styles/planoContas.css';
-
+import { notifSuccess, notifError } from '../../../../components/notificacao/notificacao'
 import SelectPlanoContas from '../../../../components/selects/SelectPlanoConta';
 
 class ModalNovaConta extends React.Component {
@@ -10,7 +11,8 @@ class ModalNovaConta extends React.Component {
         super(props)
         this.state = {
             ModalVisible: false
-        }
+        };
+        this.form = {};
     }
 
     render() {
@@ -18,7 +20,6 @@ class ModalNovaConta extends React.Component {
             labelCol: { span: 5 },
             wrapperCol: { span: 36 },
         };
-        const dateFormat = 'DD/MM/YYYY'
 
 
         const showModal = () => {
@@ -27,68 +28,44 @@ class ModalNovaConta extends React.Component {
             })
         }
 
-        // const newBillPay = async (values) => {
-        //     const obs = values.bp.obs
-        //     const value = values.bp.value
-        //     const dt = values.bp.date
-        //     const obj = {
-        //         date: dt.year() + "-" + (dt.month() + 1) + "-" + dt.date(),
-        //         idColaborator: this.data.idClient,
-        //         observation: obs,
-        //         value: value,
-        //         type: "pay",
-        //         idAccount: this.data.idAccount,
-        //         token: getToken()
-        //     }
-        //     await api.post('/bill', obj).then((response) => {
+        const newPlanoConta = async (values) => {
+            const obj = {
+                idPai: this.form.idPlanoContas ? this.form.idPlanoContas : null,
+                descricao: values.bp.nome,
+                token: getToken(),
+            };
+            await api.post('/pc', obj).then((response) => {
+                if (response.status === 200) {
+                    showModal();
+                    notifSuccess('Cadastrado com sucesso.');
+                } else {
+                    showModal();
+                    notifError('Erro ao cadastrar.');
+                }
+            })
 
-        //         if (response.status === 200) {
-        //             if (response.data) {
-        //                 api.get('/bill?token=' + getToken()).then((response) => {
-        //                     if (response.status === 200) {
-        //                         BillStore.dispatch({
-        //                             type: BillAction.SET,
-        //                             bills: response.data
-        //                         })
-        //                         this.setState({
-        //                             ModalVisible: !this.state.ModalVisible
-        //                         })
-        //                     }
-        //                 })
-        //             }
-        //         } else {
-        //             notification.open({
-        //                 message: 'Erro no Cadastro',
-        //                 description:
-        //                     'Ocorreu um erro no cadastro, entre em contato com a adminitração do sistema.',
-        //                 onClick: () => {
-        //                     console.log('Notification Clicked!');
-        //                 },
-        //             })
-        //         }
-        //     })
-
-        // }
+        }
 
 
 
         return (
             <div>
                 <Button onClick={showModal}>
-                    Nova Conta a Pagar
-                        </Button>
+                    Novo plano de conta
+                </Button>
                 <Modal
-                    title="Nova conta a Pagar"
+                    title="Nova plano de conta"
                     visible={this.state.ModalVisible}
                     footer={false}
                     onCancel={showModal}
+                    destroyOnClose
                 >
-                    <Form {...layout} name="nest-messages" onFinish={() => { console.log('oi') }} >
+                    <Form {...layout} name="nest-messages" onFinish={newPlanoConta} >
 
-                        <Form.Item name={['bp', 'date']} label="Data" >
-                            <SelectPlanoContas />
+                        <Form.Item name={['bp', 'codigo_pai']} label="Código do Pai" >
+                            <SelectPlanoContas form={this.form} />
                         </Form.Item>
-                        <Form.Item name={['bp', 'obs']} label="Observação" >
+                        <Form.Item name={['bp', 'nome']} label="Nome" >
                             <Input.TextArea />
                         </Form.Item>
                         <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
