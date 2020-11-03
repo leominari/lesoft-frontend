@@ -1,31 +1,113 @@
 import React from 'react';
-import { Select } from 'antd';
+import { TreeSelect } from 'antd';
 import { getToken } from '../../utils/auth';
 import api from '../../services/api';
 
-const { Option } = Select;
+const { TreeNode } = TreeSelect;
 
+var tempData;
 
 class SelectPlanoConta extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      planoContasOption: [],
+      planoContasSelectTree: [],
+      loading: true,
+      treeData: [],
     }
   }
 
+
+  fillChildrens(data, codigoPai) {
+    console.log(data, codigoPai);
+    let x = tempData.filter(dt => { return dt.codigoPai === codigoPai });
+    if (x.length > 0) {
+      x.forEach(element => {
+        let tempObj = {
+          title: element.codigo + ' - ' + element.nome,
+          value: element.codigo,
+          key: element.codigo,
+          children: [],
+        }
+        this.fillChildrens(tempObj.children, element.codigo);
+        data.push(tempObj);
+      })
+    }
+  }
+
+
   componentDidMount() {
-    let optionRows = []
     api.get('/pc?token=' + getToken()).then(response => {
-      response.data.forEach(planoConta => {
-        optionRows.push(<Option key={planoConta.id}>{planoConta.id}.{planoConta.descricao}</Option>)
-      });
+      tempData = response.data;
+      var defData = []
+      let x = tempData.filter(dt => { return dt.codigoPai == null });
+      x.forEach(element => {
+        let tempObj = {
+          title: element.codigo + ' - ' + element.nome,
+          value: element.codigo,
+          key: element.codigo,
+          children: [],
+        }
+        this.fillChildrens(tempObj.children, element.codigo);
+        defData.push(tempObj);
+      })
 
       this.setState({
-        planoContasOption: optionRows
+        treeData: defData,
       })
     });
   }
+
+  // componentDidMount() {
+  //   api.get('/pc?token=' + getToken()).then(response => {
+  //     var res = response.data;
+  //     console.log(response.data);
+  //     let tData = this.state.treeData;
+  //     let i = 0;
+  //     while (res.length > 1) {
+  //       if (!res[i].codigoPai) {
+  //         tData.push({
+  //           title: res[i].codigo + ' - ' + res[i].nome,
+  //           value: res[i].codigo,
+  //           key: res[i].codigo,
+  //           children: [],
+  //         })
+  //         res.splice(i, 1);
+  //         i--;
+  //       }else{
+  //         var x = res;
+  //         console.log(res);
+  //         this.fillChildren(x);
+  //         res.splice(i, 1);
+  //         i--;
+  //       }
+  //       if (res.length == i) {
+  //         i = 0;
+  //       } else {
+  //         i++;
+  //       }
+  //     }
+
+  //     this.setState({
+  //       treeData: tData,
+  //       loading: !this.state.loading,
+  //     });
+  //   });
+  // }
+
+  renderTreeNodes = (data) => {
+    return data.map((item) => {
+      if (item.children.length > 0) {
+        return (
+          <TreeNode title={item.title} value={item.value} key={item.id} dataRef={item}>
+            {this.renderTreeNodes(item.children)}
+          </TreeNode>
+        );
+      }
+      return <TreeNode {...item} dataRef={item} />;
+    });
+  }
+
 
   render() {
 
@@ -33,20 +115,19 @@ class SelectPlanoConta extends React.Component {
     const onChange = (value) => {
       this.props.form.idPlanoContas = value;
     }
-
     return (
-      <Select
+      <TreeSelect
         showSearch
-        style={{ width: 200 }}
-        placeholder={"Selecione um Plano de Conta"}
-        optionFilterProp="children"
+        style={{ width: '100%' }}
+        dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+        placeholder="Please select"
+        // allowClear
+        disabled={this.props.disabled}
+        // treeDefaultExpandAll
         onChange={onChange}
-        filterOption={(input, option) =>
-          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-        }
       >
-        {this.state.planoContasOption}
-      </Select>
+        {this.renderTreeNodes(this.state.treeData)}
+      </TreeSelect>
     )
   }
 }

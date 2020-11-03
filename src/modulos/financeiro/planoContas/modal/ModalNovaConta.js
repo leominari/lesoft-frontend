@@ -1,10 +1,15 @@
 import React from 'react';
 import api from '../../../../services/api';
 import { getToken } from '../../../../utils/auth';
-import { Button, Modal, Form, Input } from 'antd';
+import { Button, Modal, Form, Input, Typography, Space } from 'antd';
 import '../styles/planoContas.css';
 import { notifSuccess, notifError } from '../../../../components/notificacao/notificacao'
 import SelectPlanoContas from '../../../../components/selects/SelectPlanoConta';
+import {
+    PlusCircleOutlined
+} from '@ant-design/icons';
+
+const { Text, Link } = Typography;
 
 class ModalNovaConta extends React.Component {
     constructor(props) {
@@ -21,7 +26,6 @@ class ModalNovaConta extends React.Component {
             wrapperCol: { span: 36 },
         };
 
-
         const showModal = () => {
             this.setState({
                 ModalVisible: !this.state.ModalVisible
@@ -30,8 +34,9 @@ class ModalNovaConta extends React.Component {
 
         const newPlanoConta = async (values) => {
             const obj = {
-                idPai: this.form.idPlanoContas ? this.form.idPlanoContas : null,
-                descricao: values.bp.nome,
+                codigoPai: this.form.idPlanoContas ? this.form.idPlanoContas : null,
+                codigo: values.bp.codigo,
+                nome: values.bp.nome,
                 token: getToken(),
             };
             await api.post('/pc', obj).then((response) => {
@@ -46,13 +51,24 @@ class ModalNovaConta extends React.Component {
 
         }
 
-
+        function ClickToOpen(props) {
+            if (props.icon) {
+                return (
+                    <Text>
+                        {props.text}
+                        <PlusCircleOutlined onClick={showModal} />
+                    </Text>
+                );
+            } else {
+                return (<Button onClick={showModal}>
+                    Novo plano de conta
+                </Button>);
+            }
+        }
 
         return (
             <div>
-                <Button onClick={showModal}>
-                    Novo plano de conta
-                </Button>
+                <ClickToOpen icon={this.props.icon} text={this.props.text} />
                 <Modal
                     title="Nova plano de conta"
                     visible={this.state.ModalVisible}
@@ -63,7 +79,10 @@ class ModalNovaConta extends React.Component {
                     <Form {...layout} name="nest-messages" onFinish={newPlanoConta} >
 
                         <Form.Item name={['bp', 'codigo_pai']} label="Código do Pai" >
-                            <SelectPlanoContas form={this.form} />
+                            <SelectPlanoContas form={this.form} disabled={this.props.disabled} />
+                        </Form.Item>
+                        <Form.Item name={['bp', 'codigo']} label="Código" >
+                            <Input />
                         </Form.Item>
                         <Form.Item name={['bp', 'nome']} label="Nome" >
                             <Input.TextArea />

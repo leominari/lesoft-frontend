@@ -59,7 +59,7 @@ class DrawerBills extends React.Component {
                     {
                         title: 'Colaborator',
                         dataIndex: 'colaboratorName',
-                        render: text => <a>{text}</a>,
+                        render: text => <a href >{text}</a>,
                     },
                     {
                         title: 'Valor',
