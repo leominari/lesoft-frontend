@@ -1,6 +1,6 @@
 import React from 'react';
 import './styles/planoContas.css';
-import { Button, Tree } from 'antd';
+import { Tree } from 'antd';
 import ModalNovaConta from './modal/ModalNovaConta';
 import api from '../../../services/api';
 import { getToken } from '../../../utils/auth';
@@ -14,16 +14,52 @@ class PlanoContas extends React.Component {
     }
 
 
+    fillTree(data) {
+        if (data.length <= 0) return;
+        let temp = [];
+        data.forEach(element => {
+            temp.push({
+                title: <ModalNovaConta
+                    text={element.codigo + ' ' + element.nome + ' '}
+                    codPai={element.codigo}
+                    disabled={true}
+                    icon={true}
+                />,
+                key: element.codigo,
+                pai: element.codigoPai,
+                children: [],
+            });
+        });
+
+        let aux = [...temp];
+
+        aux = aux.filter(pc => {
+            return pc.codigo == null
+        });
+
+        for (var i = 0; i < temp.length; i++) {
+            for (var j = 0; j < aux.length; j++) {
+                if (temp[i].key === aux[j].pai) {
+                    console.log(temp[i].key, aux[j].pai);
+                    temp[i].children.push(aux[j]);
+                    aux.splice(j, 1);
+
+                }
+            }
+        }
+        temp = temp.filter(pc =>{
+            return pc.pai == null
+        })
+        // console.log(temp);
+        return temp;
+    }
+
+
     componentDidMount() {
         api.get('/pc?token=' + getToken()).then(response => {
+            // console.log(response.data);
             console.log(response.data);
-            let tempData = [];
-            response.data.forEach(element => {
-                tempData.push({
-                    title: <ModalNovaConta text={element.codigo + '-' + element.nome + ' '} selected={element.codigoPai + '.' + element.codigo} disabled={false} icon={true} />,
-                    key: element.codigoPai + ' - ' + element.codigo,
-                })
-            });
+            let tempData = this.fillTree(response.data);
 
             this.setState({
                 treeData: tempData,
@@ -34,7 +70,6 @@ class PlanoContas extends React.Component {
     render() {
         return <>
             <ModalNovaConta disabled={true} />
-            <ModalNovaConta disabled={false} />
             <div>
                 <br></br>
                 <h2 className="texto">Plano de Contas</h2>
@@ -42,8 +77,7 @@ class PlanoContas extends React.Component {
 
             <Tree
                 className="draggable-tree"
-                draggable
-                blockNode
+                selectable={false}
                 treeData={this.state.treeData}
             />
         </>

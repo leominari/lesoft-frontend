@@ -1,24 +1,36 @@
 import React from 'react';
 import api from '../../../../services/api';
 import { getToken } from '../../../../utils/auth';
-import { Button, Modal, Form, Input, Typography, Space } from 'antd';
+import { Button, Modal, Form, Input, Typography } from 'antd';
 import '../styles/planoContas.css';
 import { notifSuccess, notifError } from '../../../../components/notificacao/notificacao'
-import SelectPlanoContas from '../../../../components/selects/SelectPlanoConta';
 import {
     PlusCircleOutlined
 } from '@ant-design/icons';
 
-const { Text, Link } = Typography;
+const { Text } = Typography;
+
 
 class ModalNovaConta extends React.Component {
+
+    formRef = React.createRef();
     constructor(props) {
         super(props)
         this.state = {
+            data: {
+                codPai: this.props.codPai
+            },
             ModalVisible: false
         };
-        this.form = {};
+
     }
+
+    componentDidMount() {
+        //   this.formRef.current.setFieldsValue({
+        //     codigo_pai: 'Bamboo',
+        //   });
+    }
+
 
     render() {
         const layout = {
@@ -33,12 +45,14 @@ class ModalNovaConta extends React.Component {
         }
 
         const newPlanoConta = async (values) => {
+            let codPai = values.codigo_pai ? values.codigo_pai : null;
             const obj = {
-                codigoPai: this.form.idPlanoContas ? this.form.idPlanoContas : null,
-                codigo: values.bp.codigo,
-                nome: values.bp.nome,
+                codigoPai: codPai,
+                codigo: codPai ? codPai + '.' + values.codigo : values.codigo,
+                nome: values.nome,
                 token: getToken(),
             };
+            console.log(obj);
             await api.post('/pc', obj).then((response) => {
                 if (response.status === 200) {
                     showModal();
@@ -76,15 +90,17 @@ class ModalNovaConta extends React.Component {
                     onCancel={showModal}
                     destroyOnClose
                 >
-                    <Form {...layout} name="nest-messages" onFinish={newPlanoConta} >
+                    <Form {...layout} ref={this.formRef} name="nest-messages" onFinish={newPlanoConta} >
 
-                        <Form.Item name={['bp', 'codigo_pai']} label="Código do Pai" >
-                            <SelectPlanoContas form={this.form} disabled={this.props.disabled} />
+                        <Form.Item name="codigo_pai" label="Código do Pai" initialValue={this.props.codPai}  >
+                            <Input
+                                disabled={this.props.disabled}
+                            />
                         </Form.Item>
-                        <Form.Item name={['bp', 'codigo']} label="Código" >
+                        <Form.Item name="codigo" label="Código" >
                             <Input />
                         </Form.Item>
-                        <Form.Item name={['bp', 'nome']} label="Nome" >
+                        <Form.Item name="nome" label="Nome" >
                             <Input.TextArea />
                         </Form.Item>
                         <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
@@ -100,7 +116,11 @@ class ModalNovaConta extends React.Component {
             </div>
         )
 
+
+
     }
+
+
 }
 
 

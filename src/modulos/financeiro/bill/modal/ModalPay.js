@@ -8,6 +8,7 @@ import { BillAction } from '../../../../redux/actions';
 import { BillStore } from '../../../../redux/store';
 import SelectAccount from '../../../../components/selects/SelectAccount';
 import SelectColaborator from '../../../../components/selects/SelectColaborator';
+import SelectPlanoConta from '../../../../components/selects/SelectPlanoConta';
 
 class ModalPay extends React.Component {
     constructor(props) {
@@ -91,6 +92,9 @@ class ModalPay extends React.Component {
                     <Form {...layout} name="nest-messages" onFinish={newBillPay} >
                         <Form.Item label="Fornecedor">
                             <SelectColaborator type="client" form={this.data} />
+                        </Form.Item>
+                        <Form.Item label="Plano de contas:">
+                            <SelectPlanoConta type="client" form={this.data} />
                         </Form.Item>
                         <Form.Item name={['bp', 'value']} label="Valor" >
                             <InputNumber

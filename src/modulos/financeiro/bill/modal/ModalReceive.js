@@ -10,6 +10,7 @@ import { BillStore } from '../../../../redux/store';
 import SelectAccount from '../../../../components/selects/SelectAccount';
 import SelectColaborator from '../../../../components/selects/SelectColaborator';
 import dColaborator from '../../../../components/data/dColaborator';
+import SelectPlanoConta from '../../../../components/selects/SelectPlanoConta';
 
 const Colaborator = new dColaborator()
 
@@ -99,6 +100,9 @@ class ModalReceive extends React.Component {
                     <Form {...layout} name="nest-messages" onFinish={newBillReceive} >
                         <Form.Item label="Cliente ">
                             <SelectColaborator type="client" form={this.data} />
+                        </Form.Item>
+                        <Form.Item label="Plano de contas ">
+                            <SelectPlanoConta form={this.data} />
                         </Form.Item>
                         <Form.Item name={['bp', 'value']} label="Valor" >
                             <InputNumber
