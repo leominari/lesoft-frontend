@@ -19,7 +19,9 @@ class PessoaJuridica extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            ieCheck: false
+            ieCheck: false,
+            icmsCheck: false,
+            consumidorFinalCheck: false,
         }
     }
 
@@ -49,11 +51,15 @@ class PessoaJuridica extends React.Component {
         };
 
         const newColaborator = async (values) => {
-            const response = await api.post('/colaborator', {
+            let obj = {
                 ...values,
+                icms: this.state.icmsCheck,
+                ie: this.state.ieCheck,
+                consumidorFinal: this.state.consumidorFinalCheck,
                 type: 'pj',
                 token: getToken()
-            })
+            };
+            const response = await api.post('/colaborator', obj);
             if (response.status === 200) {
                 this.props.onClose()
                 notifSuccess('Colaborador cadastrado!', '')
@@ -65,10 +71,24 @@ class PessoaJuridica extends React.Component {
             }
         }
 
-        const checkChange = () => {
-            this.setState({
-                ieCheck: !this.state.ieCheck
-            })
+        const checkChange = (value) => {
+            switch (value.target.name) {
+                case 'consumidorFinal':
+                    this.setState({
+                        consumidorFinalCheck: !this.state.consumidorFinalCheck
+                    });
+                    break;
+                case 'ie':
+                    this.setState({
+                        ieCheck: !this.state.ieCheck
+                    });
+                    break;
+                case 'icms':
+                    this.setState({
+                        icmsCheck: !this.state.icmsCheck
+                    });
+                    break;
+            }
         }
 
         return (
@@ -106,7 +126,7 @@ class PessoaJuridica extends React.Component {
                 >
                     <Row>
                         <Input disabled={this.state.ieCheck} />
-                        <Checkbox onChange={checkChange}>Isento</Checkbox>
+                        <Checkbox name="ie" onChange={checkChange}>Isento</Checkbox>
                     </Row>
                 </Form.Item>
                 <Form.Item
@@ -121,7 +141,7 @@ class PessoaJuridica extends React.Component {
                     label="Contribuinte ICMS"
                     valuePropName="checked"
                 >
-                    <Checkbox></Checkbox>
+                    <Checkbox name="icms" onChange={checkChange}></Checkbox>
                 </Form.Item>
 
                 <Form.Item
@@ -129,7 +149,7 @@ class PessoaJuridica extends React.Component {
                     label="Consumidor Final"
                     valuePropName="checked"
                 >
-                    <Checkbox></Checkbox>
+                    <Checkbox name="consumidorFinal" onChange={checkChange}></Checkbox>
                 </Form.Item>
 
                 <Form.Item
