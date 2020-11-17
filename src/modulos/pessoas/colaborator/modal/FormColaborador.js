@@ -14,14 +14,16 @@ import dColaborator from '../../../../components/data/dColaborator';
 
 const ColaboratorController = new dColaborator()
 
-class PessoaJuridica extends React.Component {
+class FormColaborador extends React.Component {
 
     constructor(props) {
         super(props)
         this.state = {
             ieCheck: false,
+            ieValue: '',
             icmsCheck: false,
             consumidorFinalCheck: false,
+            pessoaJuridica: false,
         }
     }
 
@@ -55,10 +57,11 @@ class PessoaJuridica extends React.Component {
                 ...values,
                 icms: this.state.icmsCheck,
                 ie: this.state.ieCheck,
+                ieValue: this.state.ieValue,
                 consumidorFinal: this.state.consumidorFinalCheck,
-                type: 'pj',
                 token: getToken()
             };
+            console.log(obj);
             const response = await api.post('/colaborator', obj);
             if (response.status === 200) {
                 this.props.onClose()
@@ -91,31 +94,52 @@ class PessoaJuridica extends React.Component {
             }
         }
 
+        const identificadorChange = e => {
+            let value = e.target.value;
+            if (value.length <= 11) {
+                this.setState({
+                    pessoaJuridica: false,
+                });
+            } else {
+                this.setState({
+                    pessoaJuridica: true,
+                });
+            }
+        }
+
+        const inputChange = e => {
+            const [target] = e.target;
+            this.setState({
+                [target]: e.target.value,
+            })
+        }
         return (
             <Form
                 {...formItemLayout}
                 name="register"
                 onFinish={newColaborator}
                 scrollToFirstError
+
             >
                 <Form.Item
-                    name="razaoSocial"
-                    label="Razão Social"
+                    label="Nome/Razão Social"
                 >
-                    <Input />
+                    <Input name="nome" onChange={inputChange} />
+                </Form.Item>
+
+
+                <Form.Item
+                    name="identificador"
+                    label="CPF/CNPJ"
+                    hasFeedback
+                >
+                    <Input onChange={identificadorChange} />
                 </Form.Item>
 
                 <Form.Item
                     name="nomeFantasia"
                     label="Nome Fantasia"
-                >
-                    <Input />
-                </Form.Item>
-
-                <Form.Item
-                    name="cnpj"
-                    label="CNPJ"
-                    hasFeedback
+                    hidden={!this.state.pessoaJuridica}
                 >
                     <Input />
                 </Form.Item>
@@ -123,15 +147,17 @@ class PessoaJuridica extends React.Component {
                 <Form.Item
                     name="ie"
                     label="Ins. Estadual"
+                    hidden={!this.state.pessoaJuridica}
                 >
                     <Row>
-                        <Input disabled={this.state.ieCheck} />
+                        <Input disabled={this.state.ieCheck} onChange={inputChange} />
                         <Checkbox name="ie" onChange={checkChange}>Isento</Checkbox>
                     </Row>
                 </Form.Item>
                 <Form.Item
                     name="im"
                     label="Ins. Municipal"
+                    hidden={!this.state.pessoaJuridica}
                 >
                     <Input />
                 </Form.Item>
@@ -140,6 +166,7 @@ class PessoaJuridica extends React.Component {
                     name="icms"
                     label="Contribuinte ICMS"
                     valuePropName="checked"
+                    hidden={!this.state.pessoaJuridica}
                 >
                     <Checkbox name="icms" onChange={checkChange}></Checkbox>
                 </Form.Item>
@@ -228,12 +255,18 @@ class PessoaJuridica extends React.Component {
                 </Form.Item>
                 <Form.Item {...tailFormItemLayout}>
                     <Button type="primary" htmlType="submit">
-                        Registrar
+                        Cadastrar
                     </Button>
                 </Form.Item>
             </Form>
         );
     }
+
+    componentWillUnmount() {
+        this.setState({
+            pessoaJuridica: false,
+        })
+    }
 }
 
-export default PessoaJuridica
+export default FormColaborador;
