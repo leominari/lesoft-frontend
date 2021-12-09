@@ -1,3 +1,7 @@
+## Lefost
+
+ERP de uso pessoal, desenvolvido no intuito de praticar react.
+
 Para rodar o projeto
   - yarn install
   - configure o .env
